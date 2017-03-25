@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "noImplicitAny": false,
+        "sourceMap": true,
+        "rootDir": "./tests/server/src/",
+        "outDir": "./tests/server/app/"
+    },
+    "exclude": [
+        "./client/",
+        "./node_modules/",
+        "./static/",
+        "./server/src/",
+        "./tests/client/"
+    ]
+}

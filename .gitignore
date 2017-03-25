@@ -1,0 +1,5 @@
+node_modules/
+static/
+tests/client/app/
+tests/server/app/
+server/app/
