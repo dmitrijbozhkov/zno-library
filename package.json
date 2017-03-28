@@ -7,13 +7,15 @@
     "test": "npm run test-client & npm run test-server",
     "build-server": "tsc --p server.tsconfig.json",
     "build-server-tests": "tsc --p server.tests.config.json",
-    "build-client": "webpack --display-error-details",
+    "build-client": "webpack --display-error-details --cache",
     "test-client": "mocha-phantomjs ./tests/client/runner.html",
     "test-server": "mocha ./tests/server/app/dummy.test.js",
     "clean-static": "RD /S /Q static & MD static",
     "prebuild-production": "npm run clean-static",
     "build-production": "webpack -p",
     "build-all": "npm run build-server & npm run build-server-tests & npm run build-client",
+    "watch-client": "webpack --display-error-details --watch",
+    "watch-server": "start tsc --p server.tsconfig.json --watch & tsc --p server.tests.config.json --watch",
     "start": "node ./server/app/init.js"
   },
   "repository": {

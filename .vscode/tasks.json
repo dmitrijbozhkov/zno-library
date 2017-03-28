@@ -44,6 +44,14 @@
                 "start"
             ],
             "isBackground": true
+        },
+        {
+            "taskName": "watch-client",
+            "args": [
+                "run",
+                "watch-client"
+            ],
+            "isBackground": true
         }
     ]
 }

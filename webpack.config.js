@@ -1,5 +1,6 @@
 var path = require("path");
 var extract_text = require("extract-text-webpack-plugin");
+var webpack = require("webpack");
 
 module.exports = [
     { // Settings for tests
@@ -31,7 +32,7 @@ module.exports = [
     { // Settings fot client
         context: path.resolve(__dirname, "client"),
         entry: {
-            loader: "./loader/init",
+            loader: "./loader/init"
         },
         output: {
             path: path.resolve(__dirname, "static"),
@@ -58,8 +59,34 @@ module.exports = [
         plugins: [
             new extract_text({
                 filename: "[name]/[name].css"
+            }),
+            new webpack.optimize.CommonsChunkPlugin({
+                name: "commons",
+                filename: "[name]/[name].js"
             })
         ],
+        devtool: "source-map"
+    },
+    { // Settings fot worker
+        context: path.resolve(__dirname, "client"),
+        entry: {
+            worker: "./worker/init"
+        },
+        output: {
+            path: path.resolve(__dirname, "static"),
+            filename: "[name]/[name].js"
+        },
+        resolve: {
+            extensions: [".ts", ".js"]
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.ts$/,
+                    use: ["ts-loader"]
+                }
+            ]
+        },
         devtool: "source-map"
     }
 ];
