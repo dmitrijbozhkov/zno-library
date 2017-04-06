@@ -32,7 +32,7 @@ module.exports = [
     { // Settings fot client
         context: path.resolve(__dirname, "client"),
         entry: {
-            loader: "./loader/init"
+            home: "./home/init"
         },
         output: {
             path: path.resolve(__dirname, "static"),
