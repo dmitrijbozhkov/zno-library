@@ -84,7 +84,7 @@ export function handleOptions(options: IConfig): void {
 /**
  * Pushes parsed HTML
  */
-export class HtmlProducer implements Producer<IParsed> {
+class HtmlProducer implements Producer<IParsed> {
     private listener: Listener<IParsed>;
     /**
      * Starts listening for html
