@@ -36,7 +36,7 @@ module.exports = [
         },
         output: {
             path: path.resolve(__dirname, "static"),
-            filename: "[name]/[name].js"
+            filename: "[name].js"
         },
         resolve: {
             extensions: [".ts", ".scss", ".js"]
@@ -58,11 +58,11 @@ module.exports = [
         },
         plugins: [
             new extract_text({
-                filename: "[name]/[name].css"
+                filename: "[name].css"
             }),
             new webpack.optimize.CommonsChunkPlugin({
                 name: "commons",
-                filename: "[name]/[name].js"
+                filename: "[name].js"
             })
         ],
         devtool: "source-map"
@@ -74,7 +74,7 @@ module.exports = [
         },
         output: {
             path: path.resolve(__dirname, "static"),
-            filename: "[name]/[name].js"
+            filename: "[name].js"
         },
         resolve: {
             extensions: [".ts", ".js"]

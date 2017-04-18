@@ -4,19 +4,14 @@
   "description": "Web site for preparation to zno",
   "main": "index.js",
   "scripts": {
-    "test": "npm run test-client & npm run test-server",
-    "build-server": "tsc --p server.tsconfig.json",
-    "build-server-tests": "tsc --p server.tests.config.json",
+    "test": "npm run test-client",
     "build-client": "webpack --display-error-details --cache",
     "test-client": "mocha-phantomjs ./tests/client/runner.html",
-    "test-server": "mocha ./tests/server/app/dummy.test.js",
     "clean-static": "RD /S /Q static & MD static",
     "prebuild-production": "npm run clean-static",
     "build-production": "webpack -p",
-    "build-all": "npm run build-server & npm run build-server-tests & npm run build-client",
-    "watch-client": "webpack --display-error-details --watch",
-    "watch-server": "start tsc --p server.tsconfig.json --watch & tsc --p server.tests.config.json --watch",
-    "start": "node ./server/app/init.js"
+    "build-all": "npm run build-client",
+    "watch-client": "webpack --display-error-details --watch"
   },
   "repository": {
     "type": "git",
@@ -36,6 +31,7 @@
     "express": "^4.15.2",
     "express-handlebars": "^3.0.0",
     "marked": "^0.3.6",
+    "messaging-driver": "git+https://github.com/dmitrijbozhkov/messaging-driver.git",
     "passport": "^0.3.2",
     "pg": "^6.1.5",
     "pouchdb": "^6.1.2",

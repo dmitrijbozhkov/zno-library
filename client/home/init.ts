@@ -19,7 +19,7 @@ const SetupMessage: IAttachMessage = {
         name: "Startup"
     },
     data: null,
-    target: new PortTarget(new Worker("worker/worker.js") as any, new TargetRoute())
+    target: new PortTarget(new Worker("/static/worker.js") as any, new TargetRoute())
 };
 
 const GreetingMessage: IBrokerMessage = {
@@ -48,10 +48,13 @@ function main(source: MainSources) {
         worker: passGreeting$.startWith(SetupMessage)
     };
 }
-
-const drivers = {
-    DOM: makeDOMDriver("#app"),
-    worker: makeMessagingDriver(new MessageBroker()),
-    history: captureClicks(makeHistoryDriver())
-};
-run(main, drivers as any);
+try {
+    const drivers = {
+        DOM: makeDOMDriver("#app"),
+        worker: makeMessagingDriver(new MessageBroker()),
+        history: captureClicks(makeHistoryDriver())
+    };
+    run(main, drivers as any);
+} catch (e) {
+    console.log(e);
+}

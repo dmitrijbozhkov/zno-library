@@ -3,3 +3,4 @@ static/
 tests/client/app/
 tests/server/app/
 server/app/
+/server/metodichka-api/
