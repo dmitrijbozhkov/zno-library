@@ -1,5 +1,6 @@
 """ Api startup file """
 from flask import Flask, request, url_for, render_template
+from database.models import db
 import api_routes
 
 app = Flask(
@@ -7,6 +8,8 @@ app = Flask(
     template_folder="../../client/views/",
     static_folder="../../static/",
     static_url_path="/static")
+
+db.init_app(app)
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>/')

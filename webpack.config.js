@@ -6,7 +6,8 @@ module.exports = [
     { // Settings for tests
         context: path.resolve(__dirname, "tests"),
         entry: {
-            bundle: "mocha-loader!./client/src/bundle.test",
+            "lib.test": "mocha-loader!./client/src/lib/bundle.test",
+            "app.test": "mocha-loader!./client/src/app/bundle.test"
         },
         output: {
             path: path.resolve(__dirname, "tests", "client", "app"),
@@ -32,7 +33,7 @@ module.exports = [
     { // Settings fot client
         context: path.resolve(__dirname, "client"),
         entry: {
-            home: "./home/init"
+            home: "./main/init"
         },
         output: {
             path: path.resolve(__dirname, "static"),

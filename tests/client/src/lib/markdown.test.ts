@@ -1,4 +1,4 @@
-import { makeMarkdownDriver, handleParse, handleOptions, IParsed, IParse, IConfig } from "../../../client/markdown-driver/makeMarkdownDriver";
+import { makeMarkdownDriver, handleParse, handleOptions, IParsed, IParse, IConfig } from "../../../../client/markdown-driver/makeMarkdownDriver";
 import * as marked from "marked";
 import * as assert from "assert";
 import { Stream } from "xstream";
