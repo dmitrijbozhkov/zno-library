@@ -3,3 +3,8 @@ static/
 tests/client/app/
 tests/server/app/
 server/app/
+/server/metodichka-api/
+/server/src/__pycache__/
+/server/src/alembic/__pycache__/
+/server/src/alembic/versions/__pycache__/
+/server/src/database/__pycache__/

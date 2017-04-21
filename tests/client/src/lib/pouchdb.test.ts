@@ -1,8 +1,8 @@
 import * as assert from "assert";
-import { makePouchDBDriver, route, ICommand, ITransaction, DatabaseCommand, TransactionCommand, ResponseCallback, IDatabaseResponse, ResponseProducer, responseConstructor } from "../../../client/pouchdb-driver/makePouchDbDriver";
-import commandHandlers from "../../../client/pouchdb-driver/commandHandlers";
-import transactionHandlers from "../../../client/pouchdb-driver/transactionHandlers";
-import { QueryDatabase } from "../../../client/pouchdb-driver/querySink";
+import { makePouchDBDriver, route, ICommand, ITransaction, DatabaseCommand, TransactionCommand, ResponseCallback, IDatabaseResponse, ResponseProducer, responseConstructor } from "../../../../client/pouchdb-driver/makePouchDbDriver";
+import commandHandlers from "../../../../client/pouchdb-driver/commandHandlers";
+import transactionHandlers from "../../../../client/pouchdb-driver/transactionHandlers";
+import { QueryDatabase } from "../../../../client/pouchdb-driver/querySink";
 import * as PouchDB from "pouchdb";
 import { Stream } from "xstream";
 

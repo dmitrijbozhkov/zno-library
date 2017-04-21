@@ -1,17 +1,22 @@
-import "./styles/styles";
-import { run } from "@cycle/run";
-import { makeDOMDriver, DOMSource, p, div, a } from "@cycle/dom";
-import { makeMessagingDriver, MessageBroker, PortTarget, TargetRoute, ChooseType, IAttachMessage, MessagingTypes, MessagingCategories, IBrokerMessage } from "messaging-driver";
+import { DOMSource, p, div, a } from "@cycle/dom";
+import { PortTarget, TargetRoute, ChooseType, IAttachMessage, MessagingTypes, MessagingCategories, IBrokerMessage } from "messaging-driver";
 import { Stream, MemoryStream } from "xstream";
-import { makeHistoryDriver, captureClicks } from "@cycle/history";
 import { HistoryState } from "./history_types";
+import { navbar_component, INavbarSource } from "../navbar-component/init";
+import isolate from "@cycle/isolate";
 
+/**
+ * Sources for global application function
+ */
 interface MainSources {
     DOM: DOMSource;
     worker: ChooseType;
     history: MemoryStream<any>;
 }
 
+/**
+ * Setups worker
+ */
 const SetupMessage: IAttachMessage = {
     envelope: {
         type: MessagingTypes[1],
@@ -19,9 +24,12 @@ const SetupMessage: IAttachMessage = {
         name: "Startup"
     },
     data: null,
-    target: new PortTarget(new Worker("worker/worker.js") as any, new TargetRoute())
+    target: new PortTarget(new Worker("/static/worker.js") as any, new TargetRoute())
 };
 
+/**
+ * Checks if worker is working
+ */
 const GreetingMessage: IBrokerMessage = {
     envelope: {
         type: MessagingTypes[0],
@@ -31,7 +39,11 @@ const GreetingMessage: IBrokerMessage = {
     data: "Hello, "
 };
 
-function main(source: MainSources) {
+/**
+ * Creates application
+ * @param source Sources for the application
+ */
+export function main(source: MainSources) {
     let passGreeting$ = Stream.of(GreetingMessage);
     let responses$ = Stream.from(source.worker.Messages("response").Data()).startWith("Nothing now");
     let view$ = Stream.combine(responses$, source.history).drop(1);
@@ -49,9 +61,15 @@ function main(source: MainSources) {
     };
 }
 
-const drivers = {
-    DOM: makeDOMDriver("#app"),
-    worker: makeMessagingDriver(new MessageBroker()),
-    history: captureClicks(makeHistoryDriver())
-};
-run(main, drivers as any);
+/**
+ * Returns sink for navbar_comonent
+ * @param dom Navbar clicks
+ */
+export function navbar_intent(dom: DOMSource) {
+    let toggleClicks$ = dom.select("#nav-toggle").events("click");
+    let toggleButton$ = dom.select(".nav-button").events("click");
+    return {
+        toggleClicks$: toggleClicks$,
+        toggleButton$: toggleButton$
+    };
+}

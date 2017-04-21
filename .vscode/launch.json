@@ -2,38 +2,69 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "node",
+            "name": "Python",
+            "type": "python",
             "request": "launch",
-            "name": "Launch site via NPM",
-            "runtimeExecutable": "npm",
-            "windows": {
-                "runtimeExecutable": "npm.cmd"
+            "stopOnEntry": true,
+            "pythonPath": "${config:python.pythonPath}",
+            "program": "${workspaceRoot}/server/src/__init__.py",
+            "cwd": "",
+            "env": {},
+            "debugOptions": [
+                "WaitOnAbnormalExit",
+                "WaitOnNormalExit",
+                "RedirectOutput"
+            ]
+        },
+        {
+            "name": "Flask",
+            "type": "python",
+            "request": "launch",
+            "stopOnEntry": false,
+            "pythonPath": "${config:python.pythonPath}",
+            "program": "${workspaceRoot}/server/src/__init__.py",
+            "cwd": "",
+            "env": {
+                "FLASK_APP": "${workspaceRoot}/server/metodichka-api/Scripts/flask.exe"
             },
-            "runtimeArgs": [
+            "args": [
                 "run",
-                "start"
+                "--no-debugger",
+                "--no-reload"
             ],
-            "port": 5858
+            // "envFile": "${workspaceRoot}/.env",
+            "debugOptions": [
+                "WaitOnAbnormalExit",
+                "WaitOnNormalExit",
+                "RedirectOutput"
+            ]
         },
         {
-            "type": "chrome",
+            "name": "Flask (old)",
+            "type": "python",
             "request": "launch",
-            "name": "Launch Chrome against localhost",
-            "url": "http://localhost:3000",
-            "webRoot": "${workspaceRoot}",
-            "trace": true,
-            "sourceMaps": true,
-            "sourceMapPathOverrides": {
-                "webpack:///*": "${workspaceRoot}/client/*"
-            }
+            "stopOnEntry": false,
+            "pythonPath": "${config:python.pythonPath}",
+            "program": "${workspaceRoot}/run.py",
+            "cwd": "${workspaceRoot}",
+            "args": [],
+            "env": {},
+            "envFile": "${workspaceRoot}/.env",
+            "debugOptions": [
+                "WaitOnAbnormalExit",
+                "WaitOnNormalExit",
+                "RedirectOutput"
+            ]
         },
         {
-            "type": "chrome",
+            "name": "Attach (Remote Debug)",
+            "type": "python",
             "request": "attach",
-            "name": "Attach to Chrome",
-            "port": 4000,
-            "webRoot": "${workspaceRoot}/static",
-            "sourceMaps": true
+            "localRoot": "${workspaceRoot}",
+            "remoteRoot": "${workspaceRoot}",
+            "port": 3000,
+            "secret": "my_secret",
+            "host": "localhost"
         }
     ]
 }
