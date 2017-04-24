@@ -1,11 +1,11 @@
 """ Database model """
 import random
 import string
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, String, BigInteger, ForeignKey, Text, Boolean
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Integer, String, BigInteger, ForeignKey, Text, Boolean, DateTime, Column
 from sqlalchemy.orm import relationship
 
-db = SQLAlchemy()
+Base = declarative_base()
 
 def generate_string(letter_number):
     """ Generates random string """
@@ -13,7 +13,7 @@ def generate_string(letter_number):
 
 # Users
 
-class Users(db.Model):
+class Users(Base):
     """ Describes table of users """
     __tablename__ = "Users"
     UserId = Column(String(32), primary_key=True)
@@ -22,27 +22,31 @@ class Users(db.Model):
     LastName = Column(String(40), nullable=False)
     RoleId = Column(Integer, ForeignKey("Roles.RoleId"), nullable=False)
     Role = relationship("Roles", back_populates="Users")
-    Courses = relationship("Courses", back_populates="Users")
+    Courses = relationship("Courses", back_populates="Author")
     ReadChapters = relationship("UserChapterRead", back_populates="Users")
     Marks = relationship("UsersCourseTests", back_populates="Users")
     ChapterComments = relationship("CourseChapterComments", back_populates="Users")
 
-class Roles(db.Model):
+class Roles(Base):
     """ Describes table of roles """
+    def __init__(self, role_id, name):
+        self.RoleId = role_id
+        self.Name = name
     __tablename__ = "Roles"
     RoleId = Column(Integer, primary_key=True)
     Name = Column(String(40), unique=True, nullable=False)
-    Users = relationship("Users", back_populates="Roles")
+    Users = relationship("Users", back_populates="Role")
 
 # Courses
 
-class Courses(db.Model):
+class Courses(Base):
     """ Describes table of courses """
     __tablename__ = "Courses"
     CourseId = Column(String(32), primary_key=True)
     Name = Column(String(200), nullable=False)
     Contents = Column(Text, nullable=False)
     Preface = Column(Text, nullable=False)
+    PostTime = Column(DateTime, nullable=False)
     AuthorId = Column(String(32), ForeignKey("Users.UserId"), nullable=False)
     Author = relationship("Users", back_populates="Courses")
     Tags = relationship("CoursesTagsXRef", back_populates="Courses")
@@ -50,7 +54,7 @@ class Courses(db.Model):
     Chapters = relationship("CourseChapters", back_populates="Courses")
     Tests = relationship("CourseTests", back_populates="Courses")
 
-class UsersCoursesStatus(db.Model):
+class UsersCoursesStatus(Base):
     """ Describes table of courses that user have taken """
     __tablename__ = "UsersCoursesStatus"
     UserId = Column(String(32), ForeignKey("Users.UserId"), primary_key=True)
@@ -58,21 +62,24 @@ class UsersCoursesStatus(db.Model):
     StatusId = Column(Integer, ForeignKey("CourseStatuses.CourseStatusId"), nullable=False)
     Status = relationship("CourseStatuses", back_populates="UsersCoursesStatus")
 
-class CourseStatuses(db.Model):
+class CourseStatuses(Base):
     """ Describes table of user course progression """
+    def __init__(self, status_id, name):
+        self.CourseStatusId = status_id
+        self.Name = name
     __tablename__ = "CourseStatuses"
     CourseStatusId = Column(Integer, primary_key=True)
     Name = Column(String(40), nullable=False)
     Courses = relationship("UsersCoursesStatus", back_populates="CourseStatuses")
 
-class Tags(db.Model):
+class Tags(Base):
     """ Describes table of course tags """
     __tablename__ = "Tags"
     TagId = Column(Integer, primary_key=True)
     Name = Column(String(40), nullable=False)
     Courses = relationship("CoursesTagsXRef", back_populates="Tags")
 
-class CoursesTagsXRef(db.Model):
+class CoursesTagsXRef(Base):
     """ Describes table of relations between courses and tags """
     __tablename__ = "CoursesTagsXRef"
     CourseId = Column(String(32), ForeignKey("Courses.CourseId"), primary_key=True)
@@ -82,20 +89,20 @@ class CoursesTagsXRef(db.Model):
 
 # Chapters
 
-class CourseChapters(db.Model):
+class CourseChapters(Base):
     """ Describes table of chapters in course """
     __tablename__ = "CourseChapters"
     CourseChapterId = Column(String(32), primary_key=True)
     Content = Column(Text, nullable=False)
     Images = Column(Boolean, nullable=False)
-    Files = Column(Boolean, nullable=False),
+    Files = Column(Boolean, nullable=False)
     CourseId = Column(String(32), ForeignKey("Courses.CourseId"), nullable=False)
     CourseFiles = relationship("CourseChapterFiles", back_populates="CourseChapters")
     CourseImages = relationship("CourseChapterImages", back_populates="CourseChapters")
-    Chapters = relationship("Chapters", back_populates="CourseChapters"),
+    Chapters = relationship("Chapters", back_populates="CourseChapters")
     Comments = relationship("CourseChapterComments", back_populates="CourseChapters")
 
-class UserChapterRead(db.Model):
+class UserChapterRead(Base):
     """ Describes table of chapter that user read """
     __tablename__ = "UserChapterRead"
     UserId = Column(String(32), ForeignKey("Users.UserId"), primary_key=True)
@@ -103,10 +110,10 @@ class UserChapterRead(db.Model):
         String(32),
         ForeignKey("CourseChapters.CourseChapterId"),
         primary_key=True)
-    Users = relationship("Users", back_populates="UserChapterRead")
-    Courses = relationship("Courses", back_populates="UserChapterRead")
+    # Users = relationship("Users", back_populates="ReadChapters", primaryjoin="")
+    # Courses = relationship("Courses", back_populates="ReadUsers")
 
-class CourseChapterFiles(db.Model):
+class CourseChapterFiles(Base):
     """ Describes table of files appended to chapters """
     __tablename__ = "CourseChapterFiles"
     CourseChapterFileId = Column(String(32), primary_key=True)
@@ -114,7 +121,7 @@ class CourseChapterFiles(db.Model):
     CourseChapterId = Column(String(32), ForeignKey("CourseChapters.CourseChapterId"))
     CourseChapters = relationship("CourseChapters", back_populates="CourseChapterFiles")
 
-class CourseChapterImages(db.Model):
+class CourseChapterImages(Base):
     """ Describes table of images in chapters """
     __tablename__ = "CourseChapterImages"
     CourseChapterImageId = Column(String(32), primary_key=True)
@@ -122,12 +129,13 @@ class CourseChapterImages(db.Model):
     CourseChapterId = Column(String(32), ForeignKey("CourseChapters.CourseChapterId"))
     CourseChapters = relationship("CourseChapters", back_populates="CourseChapterImages")
 
-class CourseChapterComments(db.Model):
+class CourseChapterComments(Base):
     """ Describes comment on cchapter """
     __tablename__ = "CourseChapterComments"
     CourseChapterCommentId = Column(BigInteger, primary_key=True)
     Contents = Column(Text, nullable=False)
     Images = Column(Boolean, nullable=False)
+    PostTime = Column(DateTime, nullable=False)
     UserId = Column(String(32), ForeignKey("Users.UserId"), nullable=False)
     CourseChapterId = Column(
         String(32),
@@ -141,7 +149,7 @@ class CourseChapterComments(db.Model):
         "CourseChapterCommentImages",
         back_populates="CourseChapterComments")
 
-class CourseChapterCommentImages(db.Model):
+class CourseChapterCommentImages(Base):
     """ Describes comment images """
     __tablename__ = "CourseChapterCommentImages"
     CourseChapterCommentImageId = Column(String(32), primary_key=True)
@@ -156,7 +164,7 @@ class CourseChapterCommentImages(db.Model):
 
 # Tests
 
-class CourseTests(db.Model):
+class CourseTests(Base):
     """ Describes table of tests in courses """
     __tablename__ = "CourseTests"
     CourseTestId = Column(String(32), primary_key=True)
@@ -169,7 +177,7 @@ class CourseTests(db.Model):
     Answers = relationship("CourseAnswers", back_populates="CourseTests")
     TestImages = relationship("CourseTestImages", back_populates="CourseTests")
 
-class UsersCourseTests(db.Model):
+class UsersCourseTests(Base):
     """ Describes table of user marks """
     __tablename__ = "UsersCourseTest"
     UserId = Column(String(32), ForeignKey("Users.UserId"), primary_key=True)
@@ -178,14 +186,14 @@ class UsersCourseTests(db.Model):
     Users = relationship("Users", back_populates="UsersCourseTests")
     CourseTests = relationship("CourseTests", back_populates="UsersCourseTests")
 
-class CourseAnswers(db.Model):
+class CourseAnswers(Base):
     """ Describes table of answer keys to tests """
     __tablename__ = "CourseAnswers"
     CourseAnswerId = Column(String(32), ForeignKey("CourseTests.CourseTestId"), primary_key=True)
     AnswerKeys = Column(Text, nullable=False)
     CourseTests = relationship("CourseTests", back_populates="CourseAnswers")
 
-class CourseTestImages(db.Model):
+class CourseTestImages(Base):
     """ Describes table of images for tests """
     __tablename__ = "CourseTestImages"
     CourseTestImageId = Column(String(32), primary_key=True)
@@ -193,7 +201,7 @@ class CourseTestImages(db.Model):
     CourseTestId = Column(String(32), ForeignKey("CourseTests.CourseTestId"), nullable=False)
     Tests = relationship("CourseTests", back_populates="CourseTestImages")
 
-class CourseTestFiles(db.Model):
+class CourseTestFiles(Base):
     """ Describes table of files for tests """
     __tablename__ = "CourseTestFiles"
     CourseTestFileId = Column(String(32), primary_key=True)

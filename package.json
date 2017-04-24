@@ -6,8 +6,8 @@
   "scripts": {
     "test": "npm run test-client-app & npm run test-client-lib",
     "build-client": "webpack --display-error-details --cache",
-    "test-client-lib": "mocha-phantomjs ./tests/client/lib-runner.html",
-    "test-client-app": "mocha-phantomjs ./tests/client/app-runner.html",
+    "test-client-lib": "mocha-phantomjs ./client/tests/lib-runner.html",
+    "test-client-app": "mocha-phantomjs ./client/tests/app-runner.html",
     "clean-static": "RD /S /Q static & MD static",
     "prebuild-production": "npm run clean-static",
     "build-production": "webpack -p",
@@ -30,14 +30,10 @@
     "@cycle/http": "^13.2.0",
     "@cycle/isolate": "^2.1.0",
     "@cycle/run": "^3.1.0",
-    "express": "^4.15.2",
-    "express-handlebars": "^3.0.0",
     "marked": "^0.3.6",
     "messaging-driver": "git+https://github.com/dmitrijbozhkov/messaging-driver.git",
-    "passport": "^0.3.2",
-    "pg": "^6.1.5",
     "pouchdb": "^6.1.2",
-    "xstream": "^10.3.0"
+    "xstream": "^10.5.0"
   },
   "devDependencies": {
     "@types/es6-shim": "^0.31.32",

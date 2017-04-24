@@ -1,0 +1,28 @@
+@import "./variables";
+
+#navbar-buttons {
+    z-index: 2;
+    width: 0px;
+    height: 0px;
+    transition: 0.3s ease-in-out;
+    background-color: #2f2f31;
+    color: white;
+    position: absolute;
+    overflow: hidden;
+    @media screen and (max-width: $mobile) {
+        top: 60px;
+    }
+    @media screen and (max-width: $tablet) and (min-width: $mobile) {
+        top: 80px;
+    }
+    .buttons-wrapper {
+        display: none;
+    }
+}
+#navbar-buttons[data-state="nav-open"] {
+    width: 320px;
+    height: 500px;
+    .buttons-wrapper {
+        display: block;
+    }
+}

@@ -1,0 +1,46 @@
+@import "./variables";
+
+#navbar-panel {
+    width: 100%;
+    background-color: #5512f1;
+    position: fixed;
+    @media screen and (max-width: $mobile) {
+        height: 60px;
+        font-size: 35px;
+        i {
+            font-size: 40px;
+        }
+    }
+    @media screen and (max-width: $tablet) and (min-width: $mobile) {
+        height: 80px;
+        font-size: 45px;
+        i {
+            font-size: 50px;
+        }
+    }
+    z-index: 3;
+    .toggler-wrapper {
+        max-width: 320px;
+        display: table;
+        height: 100%;
+        border-width: 3px;
+        border-style: solid;
+        border-image: linear-gradient(to bottom, black, rgba(0, 0, 0, 0)) 1 100%;
+        #nav-toggle {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle;
+            width: 320px;
+            text-decoration: none;
+            .toggle-content {
+                color: white;
+                i {
+                    transition: 0.3s ease-in-out;
+                }
+                i[data-state="nav-open"] {
+                    transform: rotate(180deg);
+                }
+            }
+        }
+    }
+}

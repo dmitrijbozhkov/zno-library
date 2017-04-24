@@ -1,0 +1,13 @@
+#navbar-shadow {
+    width: 0px;
+    height: 0px;
+    background-color: black;
+    opacity: 0.1;
+    transition: 0.3s ease-in-out;
+    z-index: 1;
+}
+#navbar-shadow[data-state="nav-open"] {
+    width: 100vw;
+    height: 100vh;
+    opacity: 0.2;
+}

@@ -1,1 +1,1 @@
-export { navbar_component, INavbarSource } from "./navbar-component";
+export { navbar_component, INavbarIntent } from "./navbar-component";

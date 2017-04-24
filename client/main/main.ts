@@ -1,8 +1,8 @@
-import { DOMSource, p, div, a } from "@cycle/dom";
+import { DOMSource, p, div, a, VNode } from "@cycle/dom";
 import { PortTarget, TargetRoute, ChooseType, IAttachMessage, MessagingTypes, MessagingCategories, IBrokerMessage } from "messaging-driver";
 import { Stream, MemoryStream } from "xstream";
 import { HistoryState } from "./history_types";
-import { navbar_component, INavbarSource } from "../navbar-component/init";
+import { navbar_component, INavbarIntent } from "../navbar-component/init";
 import isolate from "@cycle/isolate";
 
 /**
@@ -12,6 +12,13 @@ interface MainSources {
     DOM: DOMSource;
     worker: ChooseType;
     history: MemoryStream<any>;
+}
+
+/**
+ * Views from components
+ */
+interface ComponentViews {
+    navbar$: Stream<VNode>;
 }
 
 /**
@@ -45,31 +52,39 @@ const GreetingMessage: IBrokerMessage = {
  */
 export function main(source: MainSources) {
     let passGreeting$ = Stream.of(GreetingMessage);
-    let responses$ = Stream.from(source.worker.Messages("response").Data()).startWith("Nothing now");
-    let view$ = Stream.combine(responses$, source.history).drop(1);
+    // let responses$ = Stream.from(source.worker.Messages("response").Data()).startWith("Nothing now").addListener({next: (m) => {console.log(m); }});
+    let isolatedNavbar = isolate(navbar_component);
+    let views = {
+        navbar$: isolatedNavbar({DOM: source.DOM}).DOM
+    };
     return {
-        DOM: view$.map((message: [IBrokerMessage, HistoryState]) => {
-            console.log(message[1]);
-            return div([
-                p(message[0].data),
-                p(message[1].pathname),
-                a("#kek", { attrs: { href: "/kek" }, }, "Click me 1"),
-                a("#lel", { attrs: { href: "/lel" }, }, "Click me 2")
-            ]);
-        }),
+        DOM: main_view(views),
         worker: passGreeting$.startWith(SetupMessage)
     };
 }
 
 /**
- * Returns sink for navbar_comonent
- * @param dom Navbar clicks
+ * Combines all views
+ * @param views Collection of views
  */
-export function navbar_intent(dom: DOMSource) {
-    let toggleClicks$ = dom.select("#nav-toggle").events("click");
-    let toggleButton$ = dom.select(".nav-button").events("click");
-    return {
-        toggleClicks$: toggleClicks$,
-        toggleButton$: toggleButton$
-    };
+export function main_view(views: ComponentViews) {
+    return Stream
+    .combine(views.navbar$)
+    .map((views) => {
+        return div("#global-wrapper", [
+            views[0]
+        ]);
+    });
+}
+
+/**
+ * Prevents default behavior of event
+ * @param actions$ Stream of UI events
+ */
+export function prevent_default(actions$: Stream<Event>) {
+    return actions$
+    .map((event) => {
+        event.preventDefault();
+        return event;
+    });
 }
