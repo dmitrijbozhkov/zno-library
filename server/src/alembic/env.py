@@ -13,8 +13,8 @@ fileConfig(config.config_file_name)
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-from database.models import db
-target_metadata = db.metadata
+from database.models import Base
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -34,7 +34,7 @@ def run_migrations_offline():
     script output.
 
     """
-    url = 'postgresql://postgres:pass@localhost:5432/metodichka'
+    url = 'postgresql://postgres:pass@localhost:5432/metodichka-test'
     context.configure(
         url=url, target_metadata=target_metadata, literal_binds=True)
 

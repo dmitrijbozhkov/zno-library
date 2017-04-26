@@ -1,11 +1,8 @@
 """ Creates flask application """
 from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
-from database.models import Roles, CourseStatuses
-from sqlalchemy import create_engine, insert
-from sqlalchemy.orm import sessionmaker
-
-connection_str = "postgresql://postgres:pass@localhost:5432/metodichka"
+from flask_security import SQLAlchemyUserDatastore, Security
+from database.models import Role, User, db
+from database.setup import init_db
 
 app = Flask(
     "metodichka",
@@ -13,26 +10,24 @@ app = Flask(
     static_folder="../../static/",
     static_url_path="/static")
 
-app.config["SQLALCHEMY_DATABASE_URI"] = connection_str
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:pass@localhost:5432/metodichka-test"
+app.config["DEBUG"] = True
+app.config["SECRET_KEY"] = "super-secret"
+app.config["SECURITY_PASSWORD_HASH"] = "bcrypt"
+app.config["SECURITY_PASSWORD_SALT"] = "$2a$16$PnnIgfMwkOjGX4SkHqSOPO"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-db = SQLAlchemy(app)
+db.init_app(app)
+
+user_datastore = SQLAlchemyUserDatastore(db, User, Role)
+security = Security(app, user_datastore)
+
+@app.before_first_request
+def fill_roles():
+    init_db(user_datastore, db)
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>/')
 def route(path=None):
     """ App route """
     return render_template("index.html")
-
-def init_db():
-    """ Adds roles to database """
-    user_role = Roles(1, "User")
-    teacher_role = Roles(2, "Teacher")
-    admin_role = Roles(3, "Admin")
-    reading_status = CourseStatuses(1, "Reading")
-    completed_status = CourseStatuses(2, "Completed")
-    db.session.add(user_role)
-    db.session.add(teacher_role)
-    db.session.add(admin_role)
-    db.session.add(reading_status)
-    db.session.add(completed_status)
-    db.session.commit()

@@ -34,14 +34,15 @@ module.exports = [
         context: path.resolve(__dirname, "client"),
         entry: {
             home: "./main/init",
-            styles: "./styles"
+            styles: "./styles",
+            assets: "./assets"
         },
         output: {
             path: path.resolve(__dirname, "static"),
             filename: "[name].js"
         },
         resolve: {
-            extensions: [".ts", ".scss", ".js"]
+            extensions: [".ts", ".scss", ".js", ".css", ".eot", ".svg", ".ttf", ".woff", ".woff2", ".otf"]
         },
         module: {
             rules: [
@@ -55,6 +56,17 @@ module.exports = [
                         fallback: "style-loader",
                         use: ["css-loader", "sass-loader"]
                     })
+                },
+                {
+                    test: /\.css$/,
+                    use: extract_text.extract({
+                        fallback: "style-loader",
+                        use: ["css-loader"]
+                    })
+                },
+                {
+                    test: /\.(eot|svg|ttf|woff|woff2|otf)$/,
+                    use: "file-loader?name=[name].[ext]"
                 }
             ]
         },
