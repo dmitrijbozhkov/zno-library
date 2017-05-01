@@ -5,3 +5,4 @@ import "../assets/fontawesome-webfont.woff";
 import "../assets/fontawesome-webfont.woff2";
 import "../assets/fontAwesome";
 import "../assets/font-awesome";
+import "../assets/loader";

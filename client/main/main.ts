@@ -55,7 +55,7 @@ export function main(source: MainSources) {
     // let responses$ = Stream.from(source.worker.Messages("response").Data()).startWith("Nothing now").addListener({next: (m) => {console.log(m); }});
     let isolatedNavbar = isolate(navbar_component);
     let views = {
-        navbar$: isolatedNavbar({DOM: source.DOM}).DOM
+        navbar$: isolatedNavbar({DOM: source.DOM, loginState$: Stream.of([true, "Иван", "Иванович"]), loaderState$: Stream.never(), notify$: Stream.never()}).DOM
     };
     return {
         DOM: main_view(views),

@@ -1,0 +1,46 @@
+$fadeout: 6s;
+
+#notify-wrapper {
+    position: relative;
+    .notify-wrapper {
+        display: table;
+        width: 100%;
+        padding-right: 10px;
+        padding-left: 10px;
+        // animation-name: fadeout-notify;
+        // animation-duration: $fadeout;
+        // animation-iteration-count: 1;
+        .notify-item {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+        }
+        .notify-content {}
+        .notify-icon {
+            color: white;
+            @media screen and (max-width: $mobile) {
+                font-size: 35px;
+                width: 40px;
+            }
+            @media screen and (min-width: $mobile) and (max-width: $tablet) {
+                font-size: 35px;
+                width: 40px;
+            }
+            @media screen and (min-width: $tablet) {
+                font-size: 35px;
+                width: 40px;
+            }
+        }
+    }
+    .notify-info {
+        background-color: #cde5f4;
+    }
+    .notify-error {
+        background-color: #fccac1;
+    }
+}
+
+// @keyframes fadeout-notify {
+//     from {opacity: 1;}
+//     to {opacity: 0;}
+// }

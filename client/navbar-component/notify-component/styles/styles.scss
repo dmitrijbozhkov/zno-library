@@ -1,0 +1,15 @@
+@import "./load";
+@import "./notify";
+
+#notifications-wrapper {
+    width: 100%;
+    top: 60px;
+    height: auto;
+    left: 0;
+    right: 0;
+    position: fixed;
+    @media screen and (min-width: $tablet) {
+        width: 80%;
+        margin: 0 auto;
+    }
+}

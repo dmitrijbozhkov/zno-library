@@ -1,5 +1,5 @@
 """ Logic for auth routes """
-from flask_security.utils import encrypt_password
+from flask_security.utils import encrypt_password, verify_password
 from sqlalchemy import func
 import re
 from app import user_datastore, db
@@ -28,7 +28,21 @@ class CredentialsChecker(object):
         except KeyError as e:
             return (False, "No " + e.args[0] + " field")
         else:
-            return(True, "OK")
+            return (True, "OK")
+
+    def log_in_check(self, credentials):
+        """ Checks log in credentials """
+        try:
+            if self.email_check(credentials["email"]) == None:
+                return (False, "Email is incorrect")
+            if self.pass_check(credentials["password"]) == None:
+                return (False, "Password is incorrect")
+            if not isinstance(credentials["remember_me"], bool):
+                return (False, "Remember me is incorrect")
+        except KeyError as e:
+            return (False, "No " + e.args[0] + " field")
+        else:
+            return (True, "OK")
 
     def email_check(self, email):
         """ Checks user email """
@@ -67,3 +81,15 @@ def add_user(credentials):
         return (True, "OK")
     else:
         return (False, "User already exists")
+
+def log_in_credentials(credentials):
+    """ Finds user and returns json token """
+    user = user_datastore.find_user(email=credentials["email"])
+    if user == None:
+        return (False, "Password or email is wrong")
+    else:
+        verification = verify_password(credentials["password"], user.password)
+        if verification:
+            return (True, user.get_auth_token())
+        else:
+            return (False, "Password or email is wrong")

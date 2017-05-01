@@ -1,3 +1,4 @@
+
 """ Builds and runs application """
 from app import app, user_datastore, db
 from api_module.api_routes import api

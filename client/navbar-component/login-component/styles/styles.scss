@@ -1,0 +1,42 @@
+@import "../../../main/styles/variables";
+#login-panel {
+    float: right;
+    text-align: right;
+    display: table;
+    height: 100%;
+    overflow: hidden;
+    @media screen and (max-width: $tablet) {
+        display: none;
+    }
+    .guest-status {
+        display: table-cell;
+        text-align: center;
+        vertical-align: middle;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    .user-button {
+        @extend .guest-status;
+        text-decoration: none;
+        color: white;
+    }
+    .user-login {
+        text-align: center;
+        vertical-align: middle;
+        display: table-cell;
+        padding-left: 10px;
+        padding-right: 10px;
+        text-decoration: none;
+        color: white;
+        transition: 0.3s;
+    }
+    .user-logoff {
+        @extend .user-login;
+    }
+}
+.user-login:hover {
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
+}
+.user-button:hover {
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
+}

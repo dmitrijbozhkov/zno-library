@@ -1,6 +1,8 @@
 @import "./panel";
 @import "./shadow";
 @import "./buttons";
+@import "../login-component/styles/styles";
+@import "../notify-component/styles/styles";
 
 #navbar-wrapper {
     width: 100%;

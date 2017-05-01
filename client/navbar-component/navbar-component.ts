@@ -1,13 +1,17 @@
-import { DOMSource } from "@cycle/dom";
+import { DOMSource, span } from "@cycle/dom";
 import { Stream } from "xstream";
 import { navbar_view } from "./navbar-view";
 import { prevent_default } from "../main/main";
-
+import { loadNotify , notify_component, INotification } from "./notify-component/init";
+import { navbar_login_component, loginStates } from "./login-component/init";
 /**
- * Source for navbar_component
+ * Sources for navbar intent
  */
 export interface INavbarIntent {
     DOM: DOMSource;
+    loginState$: loginStates;
+    loaderState$: loadNotify;
+    notify$: Stream<INotification>;
 }
 
 /**
@@ -24,11 +28,12 @@ export enum PanelStates {
  */
 export function navbar_component(source: INavbarIntent) {
     let intent = navbar_intent(source.DOM);
-    let toggleNavbar$ = intent.toggleClicks$.compose(navpanel_button_handle);
-    let closeNavbar$ = intent.toggleButton$.compose(navbar_button_handle);
-    let panelState$ = navbar_state(toggleNavbar$, closeNavbar$);
+    let panelClick$ = navbar_state(intent.toggleClicks$, intent.toggleButton$);
+    let panelState$ = panelClick$.compose(button_handle);
+    let navbar_login$ = navbar_login_component(source.loginState$);
+    let navbar_notify$ = notify_component(source.loaderState$, source.notify$);
     return {
-        DOM: navbar_view(panelState$)
+        DOM: navbar_view(panelState$, navbar_login$, navbar_notify$)
     };
 }
 
@@ -38,7 +43,7 @@ export function navbar_component(source: INavbarIntent) {
  */
 export function navbar_intent(dom: DOMSource) {
     let toggleClicks$ = dom.select("#nav-toggle").events("click").compose(prevent_default);
-    let toggleButton$ = dom.select(".nav-button").events("click").compose(prevent_default);
+    let toggleButton$ = dom.select(".nav-button").events("click");
     return {
         toggleClicks$: toggleClicks$,
         toggleButton$: toggleButton$
@@ -49,7 +54,7 @@ export function navbar_intent(dom: DOMSource) {
  * Toggles state of navbar
  * @param stream$ Stream of clics on element with id nav-toggle
  */
-export function navpanel_button_handle(stream$: Stream<Event>) {
+export function button_handle(stream$: Stream<Event>) {
     return stream$
     .fold((acc, click) => {
         if (acc === PanelStates[1]) {
@@ -61,19 +66,10 @@ export function navpanel_button_handle(stream$: Stream<Event>) {
 }
 
 /**
- * Maps clicks to nav-close string
- * @param stream$ Stream of clicks on elements with class nav-button
- */
-export function navbar_button_handle(stream$: Stream<Event>) {
-    return stream$
-    .mapTo(PanelStates[1]);
-}
-
-/**
  * Merges two event strems for navigation panel
  * @param toggle$ Stream of toggle events
  * @param button$ Stream of close events
  */
-export function navbar_state(toggle$: Stream<string>, button$: Stream<string>) {
+export function navbar_state(toggle$: Stream<Event>, button$: Stream<Event>) {
     return Stream.merge(toggle$, button$);
 }
