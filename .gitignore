@@ -1,8 +1,6 @@
 node_modules/
 static/
-tests/client/app/
-tests/server/app/
-server/app/
+client/tests/app/
 server/metodichka-api/
 server/src/alembic/__pycache__/
 server/src/alembic/versions/__pycache__/

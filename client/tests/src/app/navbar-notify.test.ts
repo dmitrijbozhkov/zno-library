@@ -27,7 +27,7 @@ describe("notify_component queue", () => {
             next: (actual) => {
                 assert.deepStrictEqual(actual, expected);
             }
-        })
+        });
     });
     it("notify_queue should remove first notification from array if IStopNotify message emitted", () => {
         let expected = [{ message: div("#not"), type: NotificationTypes[0] }];
