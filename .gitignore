@@ -1,5 +1,11 @@
 node_modules/
 static/
-tests/client/app/
-tests/server/app/
-server/app/
+client/tests/app/
+server/metodichka-api/
+server/src/alembic/__pycache__/
+server/src/alembic/versions/__pycache__/
+server/src/database/__pycache__/
+server/src/auth_module/__pycache__/
+server/src/api_module/__pycache__/
+.vscode/.ropeproject/
+server/src/__pycache__/

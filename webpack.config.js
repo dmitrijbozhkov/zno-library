@@ -4,12 +4,13 @@ var webpack = require("webpack");
 
 module.exports = [
     { // Settings for tests
-        context: path.resolve(__dirname, "tests"),
+        context: path.resolve(__dirname, "client"),
         entry: {
-            bundle: "mocha-loader!./client/src/bundle.test",
+            "lib.test": "mocha-loader!./tests/src/lib/bundle.test",
+            "app.test": "mocha-loader!./tests/src/app/bundle.test"
         },
         output: {
-            path: path.resolve(__dirname, "tests", "client", "app"),
+            path: path.resolve(__dirname, "client", "tests", "app"),
             filename: "[name].js"
         },
         resolve: {
@@ -32,14 +33,16 @@ module.exports = [
     { // Settings fot client
         context: path.resolve(__dirname, "client"),
         entry: {
-            home: "./home/init"
+            home: "./main/init",
+            styles: "./styles",
+            assets: "./assets"
         },
         output: {
             path: path.resolve(__dirname, "static"),
-            filename: "[name]/[name].js"
+            filename: "[name].js"
         },
         resolve: {
-            extensions: [".ts", ".scss", ".js"]
+            extensions: [".ts", ".scss", ".js", ".css", ".eot", ".svg", ".ttf", ".woff", ".woff2", ".otf"]
         },
         module: {
             rules: [
@@ -53,16 +56,27 @@ module.exports = [
                         fallback: "style-loader",
                         use: ["css-loader", "sass-loader"]
                     })
+                },
+                {
+                    test: /\.css$/,
+                    use: extract_text.extract({
+                        fallback: "style-loader",
+                        use: ["css-loader"]
+                    })
+                },
+                {
+                    test: /\.(eot|svg|ttf|woff|woff2|otf)$/,
+                    use: "file-loader?name=[name].[ext]"
                 }
             ]
         },
         plugins: [
             new extract_text({
-                filename: "[name]/[name].css"
+                filename: "[name].css"
             }),
             new webpack.optimize.CommonsChunkPlugin({
                 name: "commons",
-                filename: "[name]/[name].js"
+                filename: "[name].js"
             })
         ],
         devtool: "source-map"
@@ -74,7 +88,7 @@ module.exports = [
         },
         output: {
             path: path.resolve(__dirname, "static"),
-            filename: "[name]/[name].js"
+            filename: "[name].js"
         },
         resolve: {
             extensions: [".ts", ".js"]

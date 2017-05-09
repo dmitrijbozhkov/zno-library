@@ -1,5 +1,6 @@
 import { ICommand, ITransaction, IDatabaseResponse, ResponseCallback, DatabaseCommand, responseConstructor } from "./makePouchDbDriver";
-import * as PouchDB from "pouchdb";
+
+const PouchDB = (window as any).PouchDB;
 
 /**
  * Creates new database and returns modified database dictionary
@@ -20,9 +21,9 @@ function createHanlder(command: ICommand, databases: object): object {
 function destroyHandler(command: ICommand, databases: object, callback: ResponseCallback): object {
     databases[command.database].destroy(command.options, (err, response) => {
         if (err) {
-            callback(responseConstructor(command.database, DatabaseCommand[1], true, err));
+            callback(responseConstructor(command.database, DatabaseCommand[1], true, command.category, err));
         } else {
-            callback(responseConstructor(command.database, DatabaseCommand[1], false, response));
+            callback(responseConstructor(command.database, DatabaseCommand[1], false, command.category, response));
         }
     });
     delete databases[command.database];
@@ -37,7 +38,7 @@ function destroyHandler(command: ICommand, databases: object, callback: Response
  */
 function closeHandler(command: ICommand, databases: object, callback: ResponseCallback) {
     databases[command.database].close(() => {
-        callback(responseConstructor(command.database, DatabaseCommand[4], false, { ok: true }));
+        callback(responseConstructor(command.database, DatabaseCommand[4], false, command.category, { ok: true }));
     });
 }
 
@@ -64,9 +65,9 @@ function debugHandler(command: ICommand) {
 function compactHandler(command: ICommand, databases: object, callback: ResponseCallback) {
     databases[command.database].compact(command.options, (err, response) => {
         if (err) {
-            callback(responseConstructor(command.database, DatabaseCommand[2], true, err));
+            callback(responseConstructor(command.database, DatabaseCommand[2], true, command.category, err));
         } else {
-            callback(responseConstructor(command.database, DatabaseCommand[2], false, response));
+            callback(responseConstructor(command.database, DatabaseCommand[2], false, command.category, response));
         }
     });
 }
@@ -80,9 +81,9 @@ function compactHandler(command: ICommand, databases: object, callback: Response
 function infoHandler(command: ICommand, databases: object, callback: ResponseCallback) {
     databases[command.database].info((err, response) => {
         if (err) {
-            callback(responseConstructor(command.database, DatabaseCommand[3], true, err));
+            callback(responseConstructor(command.database, DatabaseCommand[3], true, command.category, err));
         } else {
-            callback(responseConstructor(command.database, DatabaseCommand[3], false, response));
+            callback(responseConstructor(command.database, DatabaseCommand[3], false, command.category, response));
         }
     });
 }

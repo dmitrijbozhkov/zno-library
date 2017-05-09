@@ -9,9 +9,9 @@ import { ICommand, ITransaction, IDatabaseResponse, ResponseCallback, DatabaseCo
 function keyHandler(transaction: ITransaction, databases: object, callback: ResponseCallback) {
     databases[transaction.database][transaction.type](transaction.document, transaction.options, (err, response) => {
         if (err) {
-            callback(responseConstructor(transaction.database, transaction.type, true, err));
+            callback(responseConstructor(transaction.database, transaction.type, true, transaction.category, err));
         } else {
-            callback(responseConstructor(transaction.database, transaction.type, false, response));
+            callback(responseConstructor(transaction.database, transaction.type, false, transaction.category, response));
         }
     });
 }
@@ -25,9 +25,9 @@ function keyHandler(transaction: ITransaction, databases: object, callback: Resp
 function simpleHandler(transaction: ITransaction, databases: object, callback: ResponseCallback) {
     databases[transaction.database][transaction.type](transaction.options, (err, response) => {
         if (err) {
-            callback(responseConstructor(transaction.database, transaction.type, true, err));
+            callback(responseConstructor(transaction.database, transaction.type, true, transaction.category, err));
         } else {
-            callback(responseConstructor(transaction.database, transaction.type, false, response));
+            callback(responseConstructor(transaction.database, transaction.type, false, transaction.category, response));
         }
     });
 }
@@ -47,9 +47,9 @@ function putAttachmentHandler(transaction: ITransaction, databases: object, call
         transaction.options.type,
         (err, response) => {
             if (err) {
-                callback(responseConstructor(transaction.database, transaction.type, true, err));
+                callback(responseConstructor(transaction.database, transaction.type, true, transaction.category, err));
             } else {
-                callback(responseConstructor(transaction.database, transaction.type, false, response));
+                callback(responseConstructor(transaction.database, transaction.type, false, transaction.category, response));
             }
     });
 }
@@ -67,9 +67,9 @@ function removeAttachmentHandler(transaction: ITransaction, databases: object, c
         transaction.options.rev,
         (err, response) => {
             if (err) {
-                callback(responseConstructor(transaction.database, transaction.type, true, err));
+                callback(responseConstructor(transaction.database, transaction.type, true, transaction.category, err));
             } else {
-                callback(responseConstructor(transaction.database, transaction.type, false, response));
+                callback(responseConstructor(transaction.database, transaction.type, false, transaction.category, response));
             }
         });
 }
@@ -87,9 +87,9 @@ function getAttachmentHandler(transaction: ITransaction, databases: object, call
         { rev: transaction.options.rev },
         (err, response) => {
             if (err) {
-                callback(responseConstructor(transaction.database, transaction.type, true, err));
+                callback(responseConstructor(transaction.database, transaction.type, true, transaction.category, err));
             } else {
-                callback(responseConstructor(transaction.database, transaction.type, false, response));
+                callback(responseConstructor(transaction.database, transaction.type, false, transaction.category, response));
             }
         });
 }

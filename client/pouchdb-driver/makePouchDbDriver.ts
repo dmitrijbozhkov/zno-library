@@ -1,10 +1,11 @@
 import { adapt } from "@cycle/run/lib/adapt";
 import { FantasyObservable, FantasyObserver } from "@cycle/run";
 import { Producer, Listener, Stream } from "xstream";
-import * as PouchDB from "pouchdb";
 import commandHandlers from "./commandHandlers";
 import transactionHandlers from "./transactionHandlers";
 import { QueryDatabase } from "./querySink";
+
+const PouchDB = (window as any).PouchDB;
 
 /**
  * Database transactions
@@ -48,7 +49,8 @@ export interface Document {
 export interface ICommand {
     database: string;
     command: string;
-    options?: { [option: string]: any };
+    category: string;
+    options: { [option: string]: any };
 };
 
 /**
@@ -58,6 +60,7 @@ export interface IDatabaseResponse {
     database: string;
     command: string;
     isErr: boolean;
+    category: string;
     response: object;
 }
 
@@ -67,8 +70,9 @@ export interface IDatabaseResponse {
 export interface ITransaction {
     database: string;
     type: string;
+    category: string;
     document: Document;
-    options?: { [option: string]: any };
+    options: { [option: string]: any };
 }
 
 /**
@@ -91,6 +95,7 @@ export function makePouchDBDriver() {
     return (commands: FantasyObservable, name?: string) => {
         commands.subscribe({
             next: (command: DBSource) => {
+                // console.log(command);
                 if ((command as ICommand).command) {
                     handler.routeCommands(command as ICommand);
                 } else if ((command as ITransaction).type) {
@@ -177,12 +182,13 @@ export function route(commandHandlers: any, transactionHandlers: any, producer: 
 /**
  * Creates IDatabaseResponse object
  */
-export function responseConstructor(database: string, command: string, isErr: boolean, response: object): IDatabaseResponse {
+export function responseConstructor(database: string, command: string, isErr: boolean, category: string, response: object): IDatabaseResponse {
     return {
         database: database,
         command: command,
         isErr: isErr,
-        response: response
+        response: response,
+        category: category
     };
 }
 

@@ -31,8 +31,12 @@
             "isTestCommand": true
         },
         {
-            "taskName": "test-client",
-            "args": ["run", "test-client"]
+            "taskName": "test-client-lib",
+            "args": ["run", "test-client-lib"]
+        },
+        {
+            "taskName": "test-client-app",
+            "args": ["run", "test-client-app"]
         },
         {
             "taskName": "test-server",

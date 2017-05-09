@@ -1,4 +1,3 @@
-import * as PouchDB from "pouchdb";
 import { ResponseProducer, responseConstructor, IDatabaseResponse } from "./makePouchDbDriver";
 import { Stream } from "xstream";
 import { adapt } from "@cycle/run/lib/adapt";
@@ -14,7 +13,7 @@ export class QueryDatabase {
      */
     public Event(event: string) {
         PouchDB.on(event as any, (e) => {
-            this.producer.trigger(responseConstructor("any", "event", false, e as any));
+            this.producer.trigger(responseConstructor("any", "event", false, "event", e as any));
         });
         let stream = Stream.create(this.producer)
         .filter((response: IDatabaseResponse) => {
@@ -55,6 +54,14 @@ export class QueryResponse {
     public Command(command: string) {
         return new QueryResponse(this.stream.filter((response: IDatabaseResponse) => {
             return response.command === command;
+        }));
+    }
+    /**
+     * Filters by category
+     */
+    public Category(category: string) {
+        return new QueryResponse(this.stream.filter((response: IDatabaseResponse) => {
+            return response.category === category;
         }));
     }
     /**
