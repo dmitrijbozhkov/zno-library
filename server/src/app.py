@@ -11,6 +11,7 @@ app = Flask(
     static_url_path="/static")
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:pass@localhost:5432/metodichka-test"
+app.config["SECURITY_TOKEN_MAX_AGE"] = 259200
 app.config["DEBUG"] = True
 app.config["SECRET_KEY"] = "super-secret"
 app.config["SECURITY_PASSWORD_HASH"] = "bcrypt"

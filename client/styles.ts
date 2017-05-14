@@ -5,3 +5,4 @@
 // import "./menu-component/styles/styles";
 // import "./content-component/styles/styles";
 import "@angular/material/prebuilt-themes/purple-green";
+import "./main/styles/main";
