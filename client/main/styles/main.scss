@@ -1,9 +1,12 @@
+@import "./_grid";
+
 body, html, main {
     width: 100%;
     height: 100%;
     margin: 0;
     padding: 0;
     min-width: 320px;
+    background: transparent;
 }
 .side-wrapper {
     width: 100%;
@@ -11,8 +14,8 @@ body, html, main {
     background-color: transparent;
     z-index: 2;
 }
-.content {
-    color: black;
+.nav-toolbar {
+    background-color: #424242;
 }
 mat-toolbar-row button {
     height: 100%;
@@ -23,6 +26,16 @@ mat-toolbar-row button {
 .account {
     margin-right: 10px !important;
 }
-.nav-toolbar {
-    background-color: #424242;
+.clean-login {
+    background-color: #e67a73;
+}
+.send-login {
+    background-color: #4b8f29;
+}
+.toggler {
+    color: white;
+}
+.login-form {
+    max-width: 500px;
+    margin: auto;
 }

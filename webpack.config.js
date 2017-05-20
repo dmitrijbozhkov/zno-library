@@ -32,7 +32,34 @@ module.exports = [
     { // Settings fot client
         context: path.resolve(__dirname, "client"),
         entry: {
-            home: "./main/init.module",
+            app: "./main/init.module"
+        },
+        output: {
+            path: path.resolve(__dirname, "static"),
+            filename: "[name].js"
+        },
+        resolve: {
+            extensions: [".ts", ".js"]
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.ts$/,
+                    use: ["ts-loader"]
+                }
+            ]
+        },
+        plugins: [
+            new webpack.optimize.CommonsChunkPlugin({
+                name: "commons",
+                filename: "[name].js"
+            })
+        ],
+        devtool: "source-map"
+    },
+    { // Settings for assets and styles
+        context: path.resolve(__dirname, "client"),
+        entry: {
             styles: "./styles",
             assets: "./assets"
         },
@@ -72,34 +99,8 @@ module.exports = [
         plugins: [
             new extract_text({
                 filename: "[name].css"
-            }),
-            new webpack.optimize.CommonsChunkPlugin({
-                name: "commons",
-                filename: "[name].js"
             })
         ],
-        devtool: "source-map"
-    },
-    { // Settings fot worker
-        context: path.resolve(__dirname, "client"),
-        entry: {
-            worker: "./worker/init"
-        },
-        output: {
-            path: path.resolve(__dirname, "static"),
-            filename: "[name].js"
-        },
-        resolve: {
-            extensions: [".ts", ".js"]
-        },
-        module: {
-            rules: [
-                {
-                    test: /\.ts$/,
-                    use: ["ts-loader"]
-                }
-            ]
-        },
         devtool: "source-map"
     }
 ];
