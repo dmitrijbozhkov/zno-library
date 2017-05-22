@@ -37,8 +37,6 @@ class CredentialsChecker(object):
                 return (False, "Email is incorrect")
             if self.pass_check(credentials["password"]) == None:
                 return (False, "Password is incorrect")
-            if not isinstance(credentials["remember_me"], bool):
-                return (False, "Remember me is incorrect")
         except KeyError as e:
             return (False, "No " + e.args[0] + " field")
         else:
@@ -84,12 +82,13 @@ def add_user(credentials):
 
 def log_in_credentials(credentials):
     """ Finds user and returns json token """
-    user = user_datastore.find_user(email=credentials["email"])
+    user = check_email(credentials["email"])
+    print(user)
     if user == None:
         return (False, "Password or email is wrong")
     else:
         verification = verify_password(credentials["password"], user.password)
         if verification:
-            return (True, user.get_auth_token())
+            return (True, user.get_auth_token(), user.email)
         else:
             return (False, "Password or email is wrong")
