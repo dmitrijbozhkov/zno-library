@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup, FormControl, Validators, FormBuilder } from "@angular/forms";
 import { ErrorInput } from "../inputBuilder";
+import { AccountService } from "../services/account.service";
 
 let errorMessages = {
     required: "Поле обязательно для заполнения",
@@ -42,7 +43,7 @@ export class LoginComponent implements OnInit {
     public login: FormGroup;
     public emailInput: ErrorInput;
     public passwordInput: ErrorInput;
-    constructor(private fb: FormBuilder) {}
+    constructor(private fb: FormBuilder, private account: AccountService) {}
     public ngOnInit() {
         this.initForm();
     }
@@ -57,7 +58,7 @@ export class LoginComponent implements OnInit {
     }
     public submitForm(event: Event, value: any) {
         event.preventDefault();
-        console.log(this.login.valid);
+        console.log(value);
     }
     public resetForm(event: Event) {
         this.login.reset();

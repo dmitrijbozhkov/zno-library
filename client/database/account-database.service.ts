@@ -1,7 +1,14 @@
 /// <reference path="../../node_modules/@types/pouchdb/index.d.ts" />
 
+interface DBWindow extends Window {
+    PouchDB: PouchDB.Static;
+}
+
+declare var window: DBWindow;
+
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { IDatabaseError, IdatabaseResponse } from "./database.module";
 
 /**
  * Fields for database document
@@ -28,25 +35,24 @@ export interface IInfoDoc extends IUserDoc {
     email: string;
 }
 
-let db = (window as any).PouchDB as PouchDB.Static;
-
 /**
  * Works with user database
  */
 @Injectable()
 export class AccountDatabaseService {
     public database: PouchDB.Database<{}>;
-    constructor() {
-        let database = db;
-        this.initDb(database);
-    }
+    constructor() {}
 
     /**
      * Creates user database
      * @param factory Factory for database creation
      */
-    public initDb(factory: PouchDB.Static) {
-        this.database = new factory("user");
+    public initDb(factory?: PouchDB.Static) {
+        if (factory === undefined) {
+            this.database = new window.PouchDB("user");
+        } else {
+            this.database = new factory("user");
+        }
     }
 
     /**
@@ -58,17 +64,25 @@ export class AccountDatabaseService {
     }
 
     /**
+     * Catches database errors
+     * @param response Stream of database responses
+     */
+    private catchErrors(response: Observable<IdatabaseResponse>): Observable<IdatabaseResponse & IDatabaseError> {
+        return response.catch((err, caught) => { return Observable.of(err); });
+    }
+
+    /**
      * Gets token from database
      */
     public getToken() {
-        return this.toObservable(this.database.get("token"));
+        return this.catchErrors(this.toObservable(this.database.get("token")));
     }
 
     /**
      * Gets info about user from database
      */
     public getInfo() {
-        return this.toObservable(this.database.get("info"));
+        return this.catchErrors(this.toObservable(this.database.get("info")));
     }
 
     /**
@@ -76,7 +90,7 @@ export class AccountDatabaseService {
      * @param token Users access token
      */
     public setToken(token: ITokenDoc) {
-        return this.toObservable(this.database.put(token));
+        return this.catchErrors(this.toObservable(this.database.put(token)));
     }
 
     /**
@@ -84,6 +98,6 @@ export class AccountDatabaseService {
      * @param info Object with user info
      */
     public setInfo(info: IInfoDoc) {
-        return this.toObservable(this.database.put(info));
+        return this.catchErrors(this.toObservable(this.database.put(info)));
     }
 }

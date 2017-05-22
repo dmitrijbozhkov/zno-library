@@ -2,7 +2,7 @@
 from flask import Blueprint, request, make_response
 from json import dumps
 from app import db
-from flask_security import auth_token_required
+from flask_security import auth_token_required, roles_required
 
 api = Blueprint("api", "api_routes", None, url_prefix="/api")
 
@@ -15,8 +15,4 @@ def recent(page: int):
 @auth_token_required
 def stuff():
     """ must be authorized """
-    if not refresh[0]:
-        if refresh[1] == "Token expired":
-            return make_response(dumps({ "error": refresh[1] }), 401)
-    else:
-        return make_response(dumps({ "error": "OK" }), 200)
+    return make_response(dumps({ "error": "OK" }), 200)

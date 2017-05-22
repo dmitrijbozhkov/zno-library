@@ -9,7 +9,7 @@ import "rxjs";
 describe("Tests for  AccountService", () => {
     let service: AccountService;
     beforeEach(() => {
-        service = new AccountService();
+        // service = new AccountService();
     });
     it("AccountService.state should pass after subscribing return object with isLogged equal to true", (done) => {
         service.state.subscribe({

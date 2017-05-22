@@ -19,4 +19,6 @@ import { Component } from "@angular/core";
         <div class="content"><router-outlet></router-outlet></div>
     </md-sidenav-container>`
 })
-export class MainComponent { name = "<p>stuff in here</p>"; }
+export class MainComponent {
+    name = "<p>stuff in here</p>";
+}
