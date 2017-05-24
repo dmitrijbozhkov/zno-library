@@ -30,11 +30,11 @@ def log_in():
     credentials = request.get_json()
     check = credentials_checker.log_in_check(credentials)
     if check[0]:
-        token = log_in_credentials(credentials)
-        if token[0]:
-            response = make_response(dumps({ "token": token[1] }), 200)
+        user = log_in_credentials(credentials)
+        if user[0]:
+            response = make_response(dumps({ "token": user[1], "email": user[2]["Email"], "roles": user[2]["Role"], "name": user[2]["Name"], "surname": user[2]["Surname"], "lastName": user[2]["LastName"] }), 200)
         else:
-            response = make_response(dumps({ "error": token[1] }), 401)
+            response = make_response(dumps({ "error": user[1] }), 401)
     else:
         response = make_response(dumps({ "error": check[1] }), 400)
     response.headers["Content-Type"] = "application/json"

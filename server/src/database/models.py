@@ -29,7 +29,7 @@ class User(Base, UserMixin):
             "Surname": self.surname,
             "LastName": self.lastName,
             "Email": self.email,
-            "Role": self.Roles.dictify()
+            "Role": [role.name for role in self.roles]
         }
         return dictionary
     id = Column(Integer, primary_key=True)

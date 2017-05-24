@@ -1,16 +1,32 @@
 import { Injectable, Inject } from "@angular/core";
 import { ReplaySubject, Observable } from "rxjs";
 import { Http } from "@angular/http";
-import { AccountDatabaseService } from "../../database/database.module";
+import { DatabaseService, DatabaseClient, IUserDoc } from "../../database/database.module";
 import { AccountHttpService } from "../../http/http.module";
-import { JwtHelper } from "angular2-jwt";
 
-export interface IAccountToken {
-    expires?: Date;
-    token?: string;
-    roles?: string[];
+/**
+ * Data for logging in user
+ */
+export interface ILogin {
+    email: string;
+    password: string;
+    rememberMe: boolean;
 }
 
+/**
+ * Data for creating user
+ */
+export interface ICreate {
+    email: string;
+    password: string;
+    name: string;
+    surname: string;
+    lastName: string;
+}
+
+/**
+ * States of account
+ */
 export enum TokenState {
     "pending",
     "unauthorized",
@@ -20,41 +36,50 @@ export enum TokenState {
 @Injectable()
 export class AccountService {
     public state: ReplaySubject<TokenState>;
-    public token: IAccountToken;
     public http: AccountHttpService;
-    public database: AccountDatabaseService;
-    public jwtHelper: JwtHelper;
-    constructor(@Inject(AccountDatabaseService) database: AccountDatabaseService, @Inject(AccountHttpService) http: AccountHttpService) {
+    public database: DatabaseService;
+    constructor(@Inject(DatabaseService) database: DatabaseService, @Inject(AccountHttpService) http: AccountHttpService) {
         this.state = new ReplaySubject();
         this.http = http;
         this.database = database;
-        this.token = {};
         this.initAccount();
     }
+
     /**
      * Initializes account service
      */
     public initAccount() {
         this.state.next(TokenState["pending"]);
-        this.jwtHelper = new JwtHelper();
-        this.database.initDb();
-        this.checkAuth();
+        this.database.addDatabase("user");
+        this.checkAuth().subscribe((response) => {
+            this.state.next(response);
+        });
     }
+
     /**
      * Checks if user is logged in
      */
     public checkAuth() {
-        this.database.getToken().subscribe((response) => {
-            console.log(this.decodeToken(""));
-            if (response.error) {
-                this.state.next(TokenState["unauthorized"]);
+        return this.database.getDatabase("user").getRecord(Observable.of(["token", {}]))
+        .map((res) => {
+            if (res.error) {
+                return TokenState["unauthorized"];
             } else {
+                return TokenState["authorized"];
             }
         });
     }
 
-    public decodeToken(token: string) {
-        let decoded = this.jwtHelper.decodeToken("WyIyIiwiNmEzMDcwMDI3MDkwNDM5MTQ1YTQ4YzJmODk0MzlhOWIiXQ.DAMOHg.T4eALlfFgNi0ux-J8IYQMMlIBB8");
-        return decoded;
-    }
+    /**
+     * Logs in user
+     */
+    public logIn() {}
+    /**
+     * Logs off user
+     */
+    public logOff() {}
+    /**
+     * Creates user
+     */
+    public create() {}
 }

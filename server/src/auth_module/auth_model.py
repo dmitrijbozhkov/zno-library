@@ -54,13 +54,13 @@ class CredentialsChecker(object):
         """ Checks user initials """
         return self.initials_regex.match(initial)
 
-def check_email(email):
-    """ Checks if user exists by email """
+def find_email(email):
+    """ Finds user by email """
     return user_datastore.find_user(email=email)
 
 def add_user(credentials):
     """ Adds user to the database """
-    if check_email(credentials["email"]) == None:
+    if find_email(credentials["email"]) == None:
         last_id = db.session.query(func.max(User.id)).first()
         id = 1
         if not (last_id[0] == None):
@@ -82,13 +82,12 @@ def add_user(credentials):
 
 def log_in_credentials(credentials):
     """ Finds user and returns json token """
-    user = check_email(credentials["email"])
-    print(user)
+    user = find_email(credentials["email"])
     if user == None:
         return (False, "Password or email is wrong")
     else:
         verification = verify_password(credentials["password"], user.password)
         if verification:
-            return (True, user.get_auth_token(), user.email)
+            return (True, user.get_auth_token(), user.dictify())
         else:
             return (False, "Password or email is wrong")

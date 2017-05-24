@@ -1,25 +1,25 @@
 import { Component, OnInit } from "@angular/core";
-import { AccountService } from "../services/account.service";
+import { AccountService, TokenState } from "../services/account.service";
 
 @Component({
     selector: "logNav",
     template: `
-    <button md-raised-button routerLink="{{loginState ? '/user' : '/user/create' }}" class="account"><i class="material-icons">account_box</i> Аккаунт</button>
-    <button *ngIf="loginState"  md-raised-button (click)="logout">Выйти</button>
-    <button *ngIf="!loginState"  md-raised-button routerLink="/user/login">Войти</button>`
+    <button md-raised-button routerLink="{{loginState === 2 ? '/user' : '/user/create' }}" class="account"><i class="material-icons">account_box</i> Аккаунт</button>
+    <button *ngIf="loginState === 2"  md-raised-button (click)="logout">Выйти</button>
+    <button *ngIf="loginState === 1"  md-raised-button routerLink="/user/login">Войти</button>`
 })
 export class LogNavComponent implements OnInit {
-    public loginState: boolean;
+    public loginState: number;
     constructor(private account: AccountService) {}
     public ngOnInit() {
         this.account.state.subscribe({
             next: (state) => {
-                console.log(state);
-                this.loginState = true;
+                this.loginState = state;
             }
         });
     }
     public logout() {
         console.log("logout");
+        this.account.logOff();
     }
 }

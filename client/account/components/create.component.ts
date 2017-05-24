@@ -51,9 +51,6 @@ let accErrorMessages = {
                 </md-input-container>
             </md-list-item>
             <md-list-item class="login-item">
-                <md-checkbox formControlName="remember">Запомнить меня</md-checkbox>
-            </md-list-item>
-            <md-list-item class="login-item">
                 <div class="link-wrapper">
                     <a routerLink="../login" routerLinkActive="active">Уже есть аккаунт?</a>
                 </div>
@@ -87,8 +84,7 @@ export class CreateUserComponent implements OnInit {
             surname: this.surnameInput.element,
             lastName: this.lastNameInput.element,
             email: this.emailInput.element,
-            password: this.passwordInput.element,
-            remember: [ false ]
+            password: this.passwordInput.element
         });
     }
 
