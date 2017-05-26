@@ -1,12 +1,16 @@
 /**
  * Database for client
  */
-export interface IDatabase {
-    get: (id: string, optons?: any) => Promise<IDatabaseError | IDatabaseRecord>;
-    put: (doc: IDatabaseRecord, options?: any) => Promise<IDatabaseError | any>;
+export interface IAccountDatabase {
+    get: (id: string, optons?: databaseOptions) => Promise<IDatabaseError | IDatabaseRecord>;
+    put: (doc: IDatabaseRecord, options?: databaseOptions) => Promise<IDatabaseError | any>;
     close: () => Promise<any>;
-    allDocs: (options?: any) => Promise<any>;
-    bulkDocs: (docs: any[], optons?: any) => Promise<any>;
+    remove: (doc: any, options?: databaseOptions) => Promise<any>;
+}
+
+export interface IDatabase extends IAccountDatabase {
+    allDocs: (options?: databaseOptions) => Promise<any>;
+    bulkDocs: (docs: any[], optons?: databaseOptions) => Promise<any>;
 }
 
 /**

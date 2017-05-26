@@ -2,10 +2,11 @@
 /// <reference path="../../../../node_modules/@types/mocha/index.d.ts" />
 
 import * as assert from "assert";
-import { DatabaseService, DatabaseClient, InMemoryStore } from "../../../database/database.service";
+import { DatabaseService, DatabaseClient, InMemoryStore } from "../../../database/database.module";
 import { Observable } from "rxjs";
+import { Utils } from "../../../main/utils/utils";
 
-function createDbMock(responses: any) {
+export function createDbMock(responses: any) {
      function db(name: string) {
         this.name = name;
     };
@@ -65,30 +66,12 @@ describe("InMemoryStore tests", () => {
             });
         }, TypeError);
     });
-    it("allDocs should return array of all database documents", (done) => {
-        let expected = [ { _id: "thing", data: "stuff" } ];
-        let store = new InMemoryStore();
-        store.put(expected[0]);
-        store.allDocs().then((actual) => {
-            assert.deepEqual(actual, expected);
-            done();
-        });
-    });
-    it("bulkDocs should get array of documents and options and insert them", (done) => {
-        let expected = [{ OK: true, id: "thing" }, { OK: true, id: "thing2" }];
-        let docs = [ { _id: "thing", data: "stuff" }, { _id: "thing2", data: "stuff2" } ];
-        let store = new InMemoryStore();
-        store.bulkDocs(docs).then((actual) => {
-            assert.deepEqual(actual, expected);
-            done();
-        });
-    });
 });
 
 describe("BaseDatabaseClient tests", () => {
     let client: DatabaseClient<any>;
     beforeEach(() => {
-        client = new DatabaseClient();
+        client = new DatabaseClient(new Utils());
     });
     it("getRecord should take request observable and return response observable with item", (done) => {
         let expected = { data: "stuff" };
@@ -145,19 +128,18 @@ describe("BaseDatabaseClient tests", () => {
         client.setDb(new database("user"));
         client.dispose();
     });
-    it("migrate should take database factory then change database databases and return observable with populationg rsponses");
 });
 
 describe("DatabaseService tests", () => {
     it("addDatabase should take database name and factory and put DatabaseClient in databases collection", () => {
         let name = "courses";
-        let service = new DatabaseService();
+        let service = new DatabaseService(new Utils());
         service.addDatabase(name, InMemoryStore);
         assert.ok(service.getDatabase(name));
     });
     it("addDatabase should throw error if database exists", () => {
         let name = "courses";
-        let service = new DatabaseService();
+        let service = new DatabaseService(new Utils());
         service.addDatabase(name, InMemoryStore);
         assert.throws(() => {
             service.addDatabase(name, InMemoryStore);
@@ -165,18 +147,18 @@ describe("DatabaseService tests", () => {
     });
     it("getDatabase should take database name and return database client", () => {
         let name = "courses";
-        let service = new DatabaseService();
+        let service = new DatabaseService(new Utils());
         service.addDatabase(name, InMemoryStore);
         assert.ok(service.getDatabase(name) instanceof DatabaseClient);
     });
     it("getDatabase should throw error if database not found", () => {
         let name = "courses";
-        let service = new DatabaseService();
+        let service = new DatabaseService(new Utils());
         assert.throws(() => { service.getDatabase(name); });
     });
     it("removeDatabase should take name and remove database with that name", () => {
         let name = "courses";
-        let service = new DatabaseService();
+        let service = new DatabaseService(new Utils());
         service.addDatabase(name, InMemoryStore);
         service.removeDatabase(name).then(() => {
             assert.throws(() => {
@@ -186,7 +168,7 @@ describe("DatabaseService tests", () => {
     });
     it("removeDatabase should throw error if database not found", () => {
         let name = "courses";
-        let service = new DatabaseService();
+        let service = new DatabaseService(new Utils());
         assert.throws(() => {
             service.removeDatabase(name);
         });

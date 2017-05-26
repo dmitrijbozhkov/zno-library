@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { AccountService } from "../services/account.service";
 import { FormGroup, FormControl, Validators, FormBuilder } from "@angular/forms";
-import { ErrorInput } from "../inputBuilder";
+import { Utils, ErrorInput, IErrorMessages, buildInput } from "../../main/utils/utils";
 
 let infoErrorMessages = {
     required: "Поле обязательно для заполнения",
@@ -63,22 +63,35 @@ let accErrorMessages = {
     </form>`
 })
 export class CreateUserComponent implements OnInit {
+    // services
+    private fb: FormBuilder;
+    private account: AccountService;
+    private inputFactory: buildInput;
+    // inputs
     public create: FormGroup;
     public nameInput: ErrorInput;
     public surnameInput: ErrorInput;
     public lastNameInput: ErrorInput;
     public emailInput: ErrorInput;
     public passwordInput: ErrorInput;
-    constructor(private fb: FormBuilder, private account: AccountService) {}
+    constructor(fb: FormBuilder, account: AccountService, utils: Utils) {
+        this.fb = fb;
+        this.account = account;
+        this.inputFactory = utils.inputFactory(fb);
+    }
     public ngOnInit() {
         this.initForm();
     }
+
+    /**
+     * Initializes form
+     */
     public initForm() {
-        this.nameInput = new ErrorInput(this.fb, "", [ Validators.required, Validators.maxLength(40) ], infoErrorMessages);
-        this.surnameInput = new ErrorInput(this.fb, "", [ Validators.required, Validators.maxLength(40) ], infoErrorMessages);
-        this.lastNameInput = new ErrorInput(this.fb, "", [ Validators.required, Validators.maxLength(40) ], infoErrorMessages);
-        this.emailInput = new ErrorInput(this.fb, "", [ Validators.required, Validators.email ], accErrorMessages);
-        this.passwordInput = new ErrorInput(this.fb, "", [ Validators.required, Validators.minLength(6) ], accErrorMessages);
+        this.nameInput = this.inputFactory("", [ Validators.required, Validators.maxLength(40) ], infoErrorMessages);
+        this.surnameInput = this.inputFactory("", [ Validators.required, Validators.maxLength(40) ], infoErrorMessages);
+        this.lastNameInput = this.inputFactory("", [ Validators.required, Validators.maxLength(40) ], infoErrorMessages);
+        this.emailInput = this.inputFactory("", [ Validators.required, Validators.email ], accErrorMessages);
+        this.passwordInput = this.inputFactory("", [ Validators.required, Validators.minLength(6) ], accErrorMessages);
         this.create = this.fb.group({
             name: this.nameInput.element,
             surname: this.surnameInput.element,

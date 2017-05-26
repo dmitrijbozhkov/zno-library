@@ -1,9 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup, FormControl, Validators, FormBuilder } from "@angular/forms";
-import { ErrorInput } from "../inputBuilder";
+import { MdSnackBar } from "@angular/material";
+import { Utils, ErrorInput, IErrorMessages, buildInput } from "../../main/utils/utils";
 import { AccountService } from "../services/account.service";
+import { ILoginCredentials } from "../services/account.service";
+import { Router } from "@angular/router";
 
-let errorMessages = {
+let errorMessages: IErrorMessages = {
     required: "Поле обязательно для заполнения",
     email: "Неправильный email",
     minlength: "Пароль должен быть не менее 6 символов"
@@ -40,25 +43,44 @@ let errorMessages = {
     </form>`
 })
 export class LoginComponent implements OnInit {
+    // services
+    private inputFactory: buildInput;
+    private fb: FormBuilder;
+    private account: AccountService;
+    private snackbar: MdSnackBar;
+    private router: Router;
+    // Inputs
     public login: FormGroup;
     public emailInput: ErrorInput;
     public passwordInput: ErrorInput;
-    constructor(private fb: FormBuilder, private account: AccountService) {}
+    constructor(fb: FormBuilder, account: AccountService, utils: Utils, snackbar: MdSnackBar, router: Router) {
+        this.inputFactory = utils.inputFactory(fb);
+        this.fb = fb;
+        this.account = account;
+        this.snackbar = snackbar;
+        this.router = router;
+    }
     public ngOnInit() {
         this.initForm();
     }
     public initForm() {
-        this.emailInput = new ErrorInput(this.fb, "", [ Validators.required, Validators.email ], errorMessages);
-        this.passwordInput = new ErrorInput(this.fb, "", [ Validators.required, Validators.minLength(6) ], errorMessages);
+        this.emailInput = this.inputFactory("", [ Validators.required, Validators.email ], errorMessages);
+        this.passwordInput = this.inputFactory( "", [ Validators.required, Validators.minLength(6) ], errorMessages);
         this.login = this.fb.group({
             email: this.emailInput.element,
             password: this.passwordInput.element,
             remember: [ false ]
         });
     }
-    public submitForm(event: Event, value: any) {
+    public submitForm(event: Event, value: ILoginCredentials) {
         event.preventDefault();
-        console.log(value);
+        if (this.login.valid) {
+            this.snackbar.open("logged in", "Cancel");
+            this.account.logIn(value).subscribe((val) => {
+                console.log(val);
+                this.router.navigate([""]);
+            });
+        }
     }
     public resetForm(event: Event) {
         this.login.reset();

@@ -13,15 +13,25 @@ import { MainComponent } from "./main.component";
 import { NotFound } from "./notFound.component";
 import { HomeComponent } from "./home.component";
 // Application modules
-import { AccountModule, LogNavComponent, AccountService } from "../account/account.module";
+import { AccountModule, LogNavComponent, AccountService, TeacherGuard, LoginGuard, AdminGuard } from "../account/account.module";
 import { AppHttpModule } from "../http/http.module";
 import { DatabaseModule } from "../database/database.module";
+import { AccountDatabaseService } from "../database/account-database.service";
 import { UIModule } from "./UI.module";
+import { LoadingService } from "./load/loading.service";
+import { LoadingComponnt } from "./load/loading.component";
+// Utils
+import { utilsProvider } from "./utils/utils";
 
 const appRoutes: Routes = [
   { path: "", component: HomeComponent },
   { path: "**", component: NotFound }
 ];
+
+/**
+ * Provides window object
+ */
+export const windowProvider = { provide: Window, useValue: window };
 
 @NgModule({
   imports: [
@@ -33,8 +43,8 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes)
   ],
   exports: [ HttpModule ],
-  providers: [ AccountService ],
-  declarations: [ MainComponent, NotFound, HomeComponent, LogNavComponent ],
+  providers: [ AccountService, LoginGuard, AdminGuard, TeacherGuard, windowProvider, utilsProvider, LoadingService, AccountDatabaseService ],
+  declarations: [ MainComponent, NotFound, HomeComponent, LogNavComponent, LoadingComponnt ],
   bootstrap: [ MainComponent ]
 })
 export class InitModule { }
