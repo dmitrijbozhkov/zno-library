@@ -78,7 +78,7 @@ def add_user(credentials):
         db.session.commit()
         return (True, "OK")
     else:
-        return (False, "User already exists")
+        return (False, "Email was already used")
 
 def log_in_credentials(credentials):
     """ Finds user and returns json token """

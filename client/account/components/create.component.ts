@@ -2,6 +2,9 @@ import { Component, OnInit } from "@angular/core";
 import { AccountService } from "../services/account.service";
 import { FormGroup, FormControl, Validators, FormBuilder } from "@angular/forms";
 import { Utils, ErrorInput, IErrorMessages, buildInput } from "../../main/utils/utils";
+import { Response } from "@angular/http";
+import { Router } from "@angular/router";
+import { MdSnackBar } from "@angular/material";
 
 let infoErrorMessages = {
     required: "Поле обязательно для заполнения",
@@ -67,6 +70,9 @@ export class CreateUserComponent implements OnInit {
     private fb: FormBuilder;
     private account: AccountService;
     private inputFactory: buildInput;
+    private snackbar: MdSnackBar;
+    private router: Router;
+    private utils: Utils;
     // inputs
     public create: FormGroup;
     public nameInput: ErrorInput;
@@ -74,10 +80,13 @@ export class CreateUserComponent implements OnInit {
     public lastNameInput: ErrorInput;
     public emailInput: ErrorInput;
     public passwordInput: ErrorInput;
-    constructor(fb: FormBuilder, account: AccountService, utils: Utils) {
+    constructor(fb: FormBuilder, account: AccountService, utils: Utils, snackbar: MdSnackBar, router: Router) {
         this.fb = fb;
         this.account = account;
         this.inputFactory = utils.inputFactory(fb);
+        this.snackbar = snackbar;
+        this.router = router;
+        this.utils = utils;
     }
     public ngOnInit() {
         this.initForm();
@@ -102,13 +111,47 @@ export class CreateUserComponent implements OnInit {
     }
 
     /**
+     * Closes snackbar
+     */
+    private resetSnackbar() {
+        this.snackbar.dismiss();
+    }
+
+    /**
+     * Handles user creation
+     * @param response Successful http response
+     */
+    private handleCreate(response: Response) {
+        this.resetSnackbar();
+        this.snackbar.open("Аккаунт создан", "Ok", { duration: 5000 });
+        this.router.navigate(["user", "login"]);
+    }
+
+    /**
+     * Handles user creation error
+     * @param error Http error
+     */
+    private handleErr(error: Response) {
+        let parsedError = error.json();
+        this.resetSnackbar();
+        this.snackbar.open(`Ошибка: ${this.utils.translateErrorResponse(parsedError)}`, "Ok", { duration: 5000 });
+        this.create.reset();
+    }
+
+    /**
      * Called on form submit
      * @param event Submit event
      * @param value Submit value
      */
     public submitForm(event: Event, value: any) {
         event.preventDefault();
-        console.log(value);
+        if (this.create.valid) {
+            this.account.create(value).subscribe((res) => {
+                this.handleCreate(res);
+            }, (err) => {
+                this.handleErr(err);
+            });
+        }
     }
 
     /**

@@ -3,6 +3,8 @@ import { FormBuilder } from "@angular/forms";
 import { ErrorInput, IErrorMessages } from "./inputBuilder";
 import { Observable } from "rxjs";
 import { Headers } from "@angular/http";
+import { BACKEND_ERROR_MAPPING, BACKEND_AUTH_FIELDS, DATABASE_ERRORS } from "./errorMapping";
+import { Response } from "@angular/http";
 // Exports
 export { ErrorInput, IErrorMessages } from "./inputBuilder";
 
@@ -12,9 +14,43 @@ export { ErrorInput, IErrorMessages } from "./inputBuilder";
 export type buildInput = (init: string, validators: any[], errorMessages?: IErrorMessages) => ErrorInput;
 
 /**
+ * Response with error
+ */
+export type errorResponse = { error: string };
+
+/**
  * Class with utils
  */
 export class Utils {
+
+    private noFieldErr(field: string) {
+        return `Нет поля ${BACKEND_AUTH_FIELDS[field]}`;
+    }
+
+    /**
+     * Translates database error
+     * @param response Error response object
+     */
+    public translateErrorResponse(response: errorResponse) {
+        let errContent = response.error;
+        let words = (errContent as string).split(" ").filter((word) => { return word !== ""; });
+        let nofield1 = words.indexOf("No");
+        let nofield2 = words.indexOf("field");
+        if ( nofield1 === -1 && nofield2 === -1) {
+            return BACKEND_ERROR_MAPPING[errContent];
+        } else {
+            return this.noFieldErr(words[nofield1 + 1]);
+        }
+    }
+
+    /**
+     * Translates database errors
+     * @param error Error object
+     */
+    public translateDatabaseError(error: any) {
+        return DATABASE_ERRORS[error.name];
+    }
+
     /**
      * Factory for creationg input
      * @param builder Form builder for input creation
@@ -30,7 +66,7 @@ export class Utils {
      * @param response Promise with response
      */
     public handleResponse<T>(response:  Promise<T>): Observable<T> {
-        return this.handleError(Observable.fromPromise(response));
+        return Observable.fromPromise(response);
     }
 
     /**

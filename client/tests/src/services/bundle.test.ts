@@ -5,3 +5,4 @@ import "./database.test";
 // import "./account.test";
 import "./utils.test";
 import "./load.test";
+import "./http.test";

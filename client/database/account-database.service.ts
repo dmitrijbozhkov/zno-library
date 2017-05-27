@@ -4,7 +4,7 @@ import { Injectable, Inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { BaseDatabaseClient } from "./databaseClient";
 import { Utils } from "../main/utils/utils";
-import { IAccountDatabase } from "./interfaces";
+import { IAccountDatabase, IDatabase } from "./interfaces";
 
 @Injectable()
 export class AccountDatabaseService {
@@ -18,8 +18,8 @@ export class AccountDatabaseService {
      * @param name Name for database
      * @param factory Factory for database creation
      */
-    public addDatabase(factory: any) {
-        this.database.setDb(factory);
+    public addDatabase(db: IAccountDatabase | IDatabase) {
+        this.database.setDb(db);
     }
 
     /**
@@ -28,18 +28,23 @@ export class AccountDatabaseService {
     public removeDatabase() {
         let database = this.getDatabase();
         if (database) {
-            return database.dispose().then(() => {
-                delete this.database;
-            });
+            return database.dispose();
         } else {
             throw new Error("No database found");
         }
     }
 
-    public setProperDb(name: string, database: IAccountDatabase) {
+    /**
+     * Checks if needed database is set and if not sets it
+     * @param name Database constructor name
+     * @param database Database constructor
+     * @param dbName Database name
+     * @param options Database options
+     */
+    public setProperDb(name: string, database: any, dbName?: string, options?: any) {
         if (!this.database.checkDb(name)) {
             this.database.dispose();
-            this.database.setDb(database);
+            this.database.setDb(new database(dbName, options));
         }
     }
 

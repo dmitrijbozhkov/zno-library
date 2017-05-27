@@ -49,6 +49,7 @@ export class LoginComponent implements OnInit {
     private account: AccountService;
     private snackbar: MdSnackBar;
     private router: Router;
+    private utils: Utils;
     // Inputs
     public login: FormGroup;
     public emailInput: ErrorInput;
@@ -59,10 +60,15 @@ export class LoginComponent implements OnInit {
         this.account = account;
         this.snackbar = snackbar;
         this.router = router;
+        this.utils = utils;
     }
     public ngOnInit() {
         this.initForm();
     }
+
+    /**
+     * Initializes login form
+     */
     public initForm() {
         this.emailInput = this.inputFactory("", [ Validators.required, Validators.email ], errorMessages);
         this.passwordInput = this.inputFactory( "", [ Validators.required, Validators.minLength(6) ], errorMessages);
@@ -72,16 +78,59 @@ export class LoginComponent implements OnInit {
             remember: [ false ]
         });
     }
+
+    /**
+     * Closes snackbar
+     */
+    private resetSnackbar() {
+        this.snackbar.dismiss();
+    }
+
+    /**
+     * Handles successful login
+     * @param response Login response
+     */
+    private handleLogin(response) {
+        this.resetSnackbar();
+        this.snackbar.open("Авторизация успешна", "Ок", { duration: 5000 });
+        this.router.navigate([""]);
+    }
+
+    /**
+     * Handles login error
+     * @param err Error response
+     */
+    private handleError(error) {
+        if (!error.error) {
+            let parsedError = error.json();
+            this.resetSnackbar();
+            this.snackbar.open(`Ошибка: ${this.utils.translateErrorResponse(parsedError)}`, "Ok", { duration: 5000 });
+        } else {
+            throw new Error(error);
+        }
+        this.login.reset();
+    }
+
+    /**
+     * Submits login form
+     * @param event Submit event
+     * @param value Inputs values
+     */
     public submitForm(event: Event, value: ILoginCredentials) {
         event.preventDefault();
         if (this.login.valid) {
-            this.snackbar.open("logged in", "Cancel");
             this.account.logIn(value).subscribe((val) => {
-                console.log(val);
-                this.router.navigate([""]);
+                this.handleLogin(val);
+            }, (err) => {
+                this.handleError(err);
             });
         }
     }
+
+    /**
+     * Resets login form
+     * @param event Reset event
+     */
     public resetForm(event: Event) {
         this.login.reset();
         event.preventDefault();

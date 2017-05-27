@@ -51,7 +51,7 @@ class AuthTestCase(unittest.TestCase):
     
     def test_create_should_return_error_if_user_exists(self):
         json = '{ "email": "bozhkov_d@mail.ru", "password": "pass34234", "name": "ivan", "surname": "ivanov", "lastName": "ivanovich" }'
-        expected = b'{"error": "User already exists"}'
+        expected = b'{"error": "Email was already used"}'
         req = self.app.post("/auth/create/", data=json, content_type="application/json")
         self.assertEqual(req.data, expected)
     

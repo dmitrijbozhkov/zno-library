@@ -18,16 +18,20 @@ describe("Utils tests", () => {
             done();
         });
     });
-    it("handleResponse should catch rejected Promise", (done) => {
-        let expected = "stuff";
-        let promise = Promise.reject(expected);
-        utils.handleResponse(promise).subscribe((actual) => {
-            assert.deepEqual(actual, expected);
-            done();
-        });
-    });
     it("inputFactory should return constructor that creates ErrorInput", () => {
         let input = utils.inputFactory(new FormBuilder())("", []);
         assert.ok(input instanceof ErrorInput);
+    });
+    it("translateErrorResponse should take errorResponse with error 'Password is incorrect' and return 'Неправельный формат пароля'", () => {
+        let error = { error: "Password is incorrect" };
+        let expected = "Неправельный формат пароля";
+        let actual = utils.translateErrorResponse(error);
+        assert.deepEqual(actual, expected);
+    });
+    it("translateErrorResponse should take errorResponse with error 'No email field' and return 'Нет поля емейл'", () => {
+        let error = { error: "No email field" };
+        let expected = "Нет поля емейл";
+        let actual = utils.translateErrorResponse(error);
+        assert.deepEqual(actual, expected);
     });
 });

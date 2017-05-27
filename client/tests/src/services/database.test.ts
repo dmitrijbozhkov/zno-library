@@ -2,7 +2,7 @@
 /// <reference path="../../../../node_modules/@types/mocha/index.d.ts" />
 
 import * as assert from "assert";
-import { DatabaseService, DatabaseClient, InMemoryStore } from "../../../database/database.module";
+import { DatabaseService, DatabaseClient, InMemoryStore, AccountDatabaseService, BaseDatabaseClient } from "../../../database/database.module";
 import { Observable } from "rxjs";
 import { Utils } from "../../../main/utils/utils";
 
@@ -68,7 +68,7 @@ describe("InMemoryStore tests", () => {
     });
 });
 
-describe("BaseDatabaseClient tests", () => {
+describe("DatabaseClient tests", () => {
     let client: DatabaseClient<any>;
     beforeEach(() => {
         client = new DatabaseClient(new Utils());
@@ -76,16 +76,6 @@ describe("BaseDatabaseClient tests", () => {
     it("getRecord should take request observable and return response observable with item", (done) => {
         let expected = { data: "stuff" };
         let returns = Promise.resolve(expected);
-        let database = createDbMock({ fromGet: returns });
-        client.setDb(new database("user"));
-        client.getRecord(Observable.of(["id", {}])).subscribe((actual) => {
-            assert.deepEqual(actual, expected);
-            done();
-        });
-    });
-    it("getRecord should take request observable and catch database errors", (done) => {
-        let expected = { data: "stuff" };
-        let returns = Promise.reject(expected);
         let database = createDbMock({ fromGet: returns });
         client.setDb(new database("user"));
         client.getRecord(Observable.of(["id", {}])).subscribe((actual) => {
@@ -113,14 +103,16 @@ describe("BaseDatabaseClient tests", () => {
         client.setDb(new database("user"));
         client.getAllRecords(Observable.of([{}])).subscribe(() => {});
     });
-    it("putRecord should take request observable and catch database errors", (done) => {
-        let expected = { data: "stuff" };
-        let returns = Promise.reject(expected);
-        let database = createDbMock({ fromPut: returns });
+    it("checkDb should take database constructor name and return true if passed name is equal to database constructor name", () => {
+        let database = createDbMock({});
         client.setDb(new database("user"));
-        client.putRecord(Observable.of([expected, {}])).subscribe((actual) => {
-            assert.deepEqual(actual, expected);
-            done();
+        assert.ok(client.checkDb("db"));
+    });
+    it("setDb should take database and put it into database filed", (done) => {
+        let database = createDbMock({ closed: () => { assert.ok(true); done(); } });
+        client.setDb(new database("user"));
+        assert.doesNotThrow(() => {
+            client.dispose();
         });
     });
     it("dispose should close database", (done) => {
@@ -172,5 +164,39 @@ describe("DatabaseService tests", () => {
         assert.throws(() => {
             service.removeDatabase(name);
         });
+    });
+});
+
+describe("AccountDatabaseService tests", () => {
+    let service: AccountDatabaseService;
+    beforeEach(() => {
+        service = new AccountDatabaseService(new Utils());
+    });
+    it("getDatabase should return BaseDatabaseClient from database field", () => {
+        let expected = {};
+        service.addDatabase(expected as any);
+        assert.ok(service.getDatabase() instanceof BaseDatabaseClient);
+    });
+    it("addDatabase should call setDb on database field and pass database to it", () => {
+        let expected = {};
+        service.addDatabase(expected as any);
+        assert.deepEqual(service.getDatabase().database, expected);
+    });
+    it("removeDatabase should call dispose on database", (done) => {
+        let database = createDbMock({ closed: () => { assert.ok(true);  done(); } });
+        service.addDatabase(new database("user"));
+        service.removeDatabase();
+    });
+    it("removeDatabase should throw exception if database client not found", () => {
+        let service = new AccountDatabaseService(new Utils());
+        assert.throws(() => {
+            service.removeDatabase();
+        });
+    });
+    it("setProperDb should take database constructor name, constructor for new database, new database name and database options and if constructor name is not equal to passed set new database", () => {
+        let expected = { close: () => {} };
+        service.addDatabase(expected as any);
+        service.setProperDb("InMemoryStore", InMemoryStore);
+        assert.ok(service.getDatabase().database instanceof InMemoryStore);
     });
 });

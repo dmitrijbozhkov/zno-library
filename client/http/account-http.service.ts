@@ -16,10 +16,8 @@ export class AccountHttpService {
         let content = this.utils.JsonType();
         let options = new RequestOptions({ headers: content });
         return credentials.map((req) => {
-            let response = this.utils.handleError(this.http.post("auth/login/", { email: req.email, password: req.password }, options));
-            return response.map((response) => {
-                return response;
-            });
+            let response = this.http.post("auth/login/", { email: req.email, password: req.password }, options);
+            return response;
         }).concatAll();
     }
 
@@ -27,5 +25,12 @@ export class AccountHttpService {
      * Creates new user
      * @param credentials Observable of create credentials
      */
-    public createUser(credentials: Observable<ICreate>) {}
+    public createUser(credentials: Observable<ICreate>) {
+        let content = this.utils.JsonType();
+        let options = new RequestOptions({ headers: content });
+        return credentials.map((req) => {
+            let response = this.http.post("auth/create/", req, options);
+            return response;
+        }).concatAll();
+    }
 }

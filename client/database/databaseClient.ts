@@ -25,7 +25,6 @@ export class BaseDatabaseClient {
      */
     public putRecord(request: Observable<[any, databaseOptions]>) {
         return request.map((req) => {
-            console.log(this.database, req);
             return this.handler.handleResponse(this.database.put(req[0], req[1]));
         }).concatAll();
     }

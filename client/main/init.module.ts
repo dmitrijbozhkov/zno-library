@@ -15,8 +15,7 @@ import { HomeComponent } from "./home.component";
 // Application modules
 import { AccountModule, LogNavComponent, AccountService, TeacherGuard, LoginGuard, AdminGuard } from "../account/account.module";
 import { AppHttpModule } from "../http/http.module";
-import { DatabaseModule } from "../database/database.module";
-import { AccountDatabaseService } from "../database/account-database.service";
+import { AccountDatabaseService, DatabaseService } from "../database/database.module";
 import { UIModule } from "./UI.module";
 import { LoadingService } from "./load/loading.service";
 import { LoadingComponnt } from "./load/loading.component";
@@ -39,11 +38,10 @@ export const windowProvider = { provide: Window, useValue: window };
     AccountModule,
     HttpModule,
     AppHttpModule,
-    DatabaseModule,
     RouterModule.forRoot(appRoutes)
   ],
   exports: [ HttpModule ],
-  providers: [ AccountService, LoginGuard, AdminGuard, TeacherGuard, windowProvider, utilsProvider, LoadingService, AccountDatabaseService ],
+  providers: [ AccountService, LoginGuard, AdminGuard, TeacherGuard, windowProvider, utilsProvider, LoadingService, AccountDatabaseService, DatabaseService ],
   declarations: [ MainComponent, NotFound, HomeComponent, LogNavComponent, LoadingComponnt ],
   bootstrap: [ MainComponent ]
 })

@@ -27,6 +27,9 @@ export interface ILoginCredentials {
     remember: boolean;
 }
 
+/**
+ * Response from logging in
+ */
 export interface ILoginResponse {
     token: string;
     email: string;
@@ -66,16 +69,11 @@ export class AccountService {
      */
     public initAccount() {
         this.state.next(TokenState["pending"]);
-        this.database.addDatabase(new this.pouch("user"));
-        this.checkAuth().map((res) => {
-            if (res.error) {
-                return TokenState["unauthorized"];
-            } else {
-                return TokenState["authorized"];
-            }
-        }).subscribe((response) => {
-            this.loading.onEnd();
-            this.state.next(response);
+        this.database.addDatabase(new this.pouch("user", { auto_compaction: true }));
+        this.checkAuth().subscribe((response) => {
+            this.state.next(TokenState["authorized"]);
+        }, (err) => {
+            this.state.next(TokenState["unauthorized"]);
         });
     }
 
@@ -85,9 +83,9 @@ export class AccountService {
      */
     private setProperStore(persistent: boolean) {
         if (persistent) {
-            this.database.setProperDb("Te", new this.pouch("user"));
+            this.database.setProperDb("Te", this.pouch, "user", { auto_compaction: true });
         } else {
-            this.database.setProperDb("InMemoryStore", new InMemoryStore());
+            this.database.setProperDb("InMemoryStore", InMemoryStore);
         }
     }
 
@@ -96,7 +94,11 @@ export class AccountService {
      */
     public checkAuth(): Observable<IUserDoc> {
         this.loading.onStart();
-        return this.database.getDatabase().getRecord(Observable.of(["token", {}]));
+        return this.database.getDatabase().getRecord(Observable.of(["token", {}])).do(() => {
+            this.loading.onEnd();
+        }, () => {
+            this.loading.onEnd();
+        });
     }
 
     /**
@@ -113,29 +115,52 @@ export class AccountService {
         });
     }
 
-    private handleLoginError() {}
-
     /**
      * Logs in user
+     * @param credentials Login credentials and should auth be remembered
      */
     public logIn(credentials: ILoginCredentials): Observable<any> {
         this.loading.onStart();
         let httpResponse = this.http.loginUser(Observable.of(credentials));
         let loginHandled = this.handleLogin(httpResponse, credentials.remember);
-        let databaseResponse = this.database.getDatabase().putRecord(loginHandled).map((response) => {
+        let databaseResponse = this.database.getDatabase().putRecord(loginHandled);
+        return databaseResponse.do((value) => {
             this.loading.onEnd();
-            return response;
+            this.state.next(TokenState["authorized"]);
+        }, (error) => {
+            this.loading.onEnd();
+            this.state.next(TokenState["unauthorized"]);
         });
-        return databaseResponse;
     }
 
     /**
      * Logs off user
      */
-    public logOff() {}
+    public logOff() {
+        this.loading.onStart();
+        let database = this.database.getDatabase();
+        let getToken = database.getRecord(Observable.of(["token", {}])).map((response) => {
+            return [ response, {} ];
+        });
+        let deleteToken = database.removeRecord(getToken);
+        return deleteToken.do(() => {
+            this.state.next(TokenState["unauthorized"]);
+            this.loading.onEnd();
+        }, () => {
+            this.loading.onEnd();
+        });
+    }
 
     /**
      * Creates user
      */
-    public create() {}
+    public create(credentials: ICreate) {
+        this.loading.onStart();
+        let httpResponse = this.http.createUser(Observable.of(credentials));
+        return httpResponse.do(() => {
+            this.loading.onEnd();
+        }, () => {
+            this.loading.onEnd();
+        });
+    }
 }
