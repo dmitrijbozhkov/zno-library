@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 
 @Component({
-    selector: "panel",
+    selector: "history",
     template: `
-    <p>User panel</p>
+    <p>Ths is settings</p>
     `
 })
-export class Panel {}
+export class SettingsComponent {}

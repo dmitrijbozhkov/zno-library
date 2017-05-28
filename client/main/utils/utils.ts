@@ -5,6 +5,7 @@ import { Observable } from "rxjs";
 import { Headers } from "@angular/http";
 import { BACKEND_ERROR_MAPPING, BACKEND_AUTH_FIELDS, DATABASE_ERRORS } from "./errorMapping";
 import { Response } from "@angular/http";
+import { sameFields } from "./sameValidator";
 // Exports
 export { ErrorInput, IErrorMessages } from "./inputBuilder";
 
@@ -23,6 +24,17 @@ export type errorResponse = { error: string };
  */
 export class Utils {
 
+    /**
+     * Collection of input validators
+     */
+    public Validators = {
+        sameFields: sameFields
+    };
+
+    /**
+     * Constructs error message for no field error
+     * @param field Field name
+     */
     private noFieldErr(field: string) {
         return `Нет поля ${BACKEND_AUTH_FIELDS[field]}`;
     }

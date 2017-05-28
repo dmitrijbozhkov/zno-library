@@ -1,6 +1,6 @@
 // Angular imports
 import { NgModule } from "@angular/core";
-import { RouterModule, Routes, CanActivate } from "@angular/router";
+import { RouterModule, Routes } from "@angular/router";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 // Account exports
 export { LogNavComponent } from "./components/logNav.component";
@@ -14,19 +14,14 @@ export { TeacherGuard } from "./services/teacherGuard.service";
 import { LoginComponent } from "./components/login.component";
 import { CreateUserComponent } from "./components/create.component";
 import { UIModule } from "../main/UI.module";
-import { Panel } from "./components/panel.component";
-import { AdminGuard } from "./services/adminGuard.service";
-import { LoginGuard } from "./services/loginGuard.service";
-import { TeacherGuard } from "./services/teacherGuard.service";
 
 let userRoutes: Routes = [
     { path: "user/login", component: LoginComponent },
     { path: "user/create", component: CreateUserComponent },
-    { path: "user", component: Panel, canActivate: [ LoginGuard ] },
 ];
 
 @NgModule({
     imports: [ ReactiveFormsModule, UIModule, FormsModule, RouterModule.forRoot(userRoutes) ],
-    declarations: [ LoginComponent, CreateUserComponent, Panel ],
+    declarations: [ LoginComponent, CreateUserComponent ],
 })
 export class AccountModule {}

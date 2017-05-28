@@ -1,5 +1,18 @@
 import { NgModule } from "@angular/core";
-import { MdToolbarModule, MdButtonModule, MdSidenavModule, MdIconModule, MdInputModule, MdCheckboxModule, MdListModule, MaterialModule, MdSnackBarModule, MdProgressBarModule } from "@angular/material";
+import {
+    MdToolbarModule,
+    MdButtonModule,
+    MdSidenavModule,
+    MdIconModule,
+    MdInputModule,
+    MdCheckboxModule,
+    MdListModule,
+    MaterialModule,
+    MdSnackBarModule,
+    MdProgressBarModule,
+    MdTabsModule,
+    MdCardModule
+} from "@angular/material";
 import { MdIconRegistry } from "@angular/material";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { BrowserModule } from "@angular/platform-browser";
@@ -16,7 +29,9 @@ import { BrowserModule } from "@angular/platform-browser";
         MdSnackBarModule,
         BrowserAnimationsModule,
         BrowserModule,
-        MdProgressBarModule
+        MdProgressBarModule,
+        MdTabsModule,
+        MdCardModule
     ],
     exports: [
         MdToolbarModule,
@@ -29,7 +44,9 @@ import { BrowserModule } from "@angular/platform-browser";
         BrowserAnimationsModule,
         MdSnackBarModule,
         BrowserModule,
-        MdProgressBarModule
+        MdProgressBarModule,
+        MdTabsModule,
+        MdCardModule
     ],
     providers: [ MdIconRegistry ]
 })

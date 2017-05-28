@@ -1,6 +1,8 @@
 import { Injectable, Inject } from "@angular/core";
 import { CanActivate } from "@angular/router";
 import { AccountService } from "./account.service";
+import { Observable } from "rxjs";
+import { MdSnackBar } from "@angular/material";
 
 /**
  * Checks if user is logged in
@@ -8,17 +10,22 @@ import { AccountService } from "./account.service";
 @Injectable()
 export class AdminGuard implements CanActivate {
     private account: AccountService;
-    constructor(@Inject(AccountService) account: AccountService ) {
+    private snackbar: MdSnackBar;
+    constructor(@Inject(AccountService) account: AccountService, @Inject(MdSnackBar) snackbar: MdSnackBar) {
         this.account = account;
+        this.snackbar = snackbar;
     }
 
     /**
      * Checks if route can be activated
-     * @param route
-     * @param state
      */
-    canActivate(route, state) {
-        console.log(route, state);
-        return true;
+    canActivate() {
+        return this.account.checkAuth()
+            .map((response) => { return response.roles.indexOf("Admin") !== -1; })
+            .catch((response) => {
+                this.snackbar.dismiss();
+                this.snackbar.open("Вы не авторизованы", "Ok", { duration: 5000 });
+                return Observable.of(false);
+            });
     }
 }

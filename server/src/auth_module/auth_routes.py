@@ -32,7 +32,7 @@ def log_in():
     if check[0]:
         user = log_in_credentials(credentials)
         if user[0]:
-            response = make_response(dumps({ "token": user[1], "email": user[2]["Email"], "roles": user[2]["Role"], "name": user[2]["Name"], "surname": user[2]["Surname"], "lastName": user[2]["LastName"] }), 200)
+            response = make_response(dumps({ "token": user[1], "email": user[2]["email"], "roles": user[2]["roles"], "name": user[2]["name"], "surname": user[2]["surname"], "lastName": user[2]["lastName"] }), 200)
         else:
             response = make_response(dumps({ "error": user[1] }), 401)
     else:

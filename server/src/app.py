@@ -27,8 +27,12 @@ security = Security(app, user_datastore)
 def fill_roles():
     init_db(user_datastore, db)
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>/')
-def route(path=None):
+@app.route("/")
+def route():
     """ App route """
+    return render_template("index.html")
+
+@app.errorhandler(404)
+def page_not_found(e):
+    """ If not found let angular figure out what to do """
     return render_template("index.html")

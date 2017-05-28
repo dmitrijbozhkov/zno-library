@@ -19,6 +19,7 @@ import { AccountDatabaseService, DatabaseService } from "../database/database.mo
 import { UIModule } from "./UI.module";
 import { LoadingService } from "./load/loading.service";
 import { LoadingComponnt } from "./load/loading.component";
+import { PanelModule } from "../panel/panel.module";
 // Utils
 import { utilsProvider } from "./utils/utils";
 
@@ -36,6 +37,7 @@ export const windowProvider = { provide: Window, useValue: window };
   imports: [
     UIModule,
     AccountModule,
+    PanelModule,
     HttpModule,
     AppHttpModule,
     RouterModule.forRoot(appRoutes)

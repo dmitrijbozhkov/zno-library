@@ -14,7 +14,8 @@ let infoErrorMessages = {
 let accErrorMessages = {
     email: "Неправильный email",
     minlength: "Пароль должен быть не менее 6 символов",
-    required: "Поле обязательно для заполнения"
+    required: "Поле обязательно для заполнения",
+    sameFields: "Пароли должны совпадать"
 };
 
 @Component({
@@ -53,6 +54,12 @@ let accErrorMessages = {
                     <md-error *ngIf="passwordInput.isErr">{{ passwordInput.errorMessage }}</md-error>
                 </md-input-container>
             </md-list-item>
+            <md-list-item class="login-input login-item">
+                <md-input-container>
+                    <input mdInput required placeholder="Повторите пароль" type="password" formControlName="repeatPassword" />
+                    <md-error *ngIf="repeatPasswordInput.isErr">{{ repeatPasswordInput.errorMessage }}</md-error>
+                </md-input-container>
+            </md-list-item>
             <md-list-item class="login-item">
                 <div class="link-wrapper">
                     <a routerLink="../login" routerLinkActive="active">Уже есть аккаунт?</a>
@@ -80,6 +87,7 @@ export class CreateUserComponent implements OnInit {
     public lastNameInput: ErrorInput;
     public emailInput: ErrorInput;
     public passwordInput: ErrorInput;
+    public repeatPasswordInput: ErrorInput;
     constructor(fb: FormBuilder, account: AccountService, utils: Utils, snackbar: MdSnackBar, router: Router) {
         this.fb = fb;
         this.account = account;
@@ -101,12 +109,14 @@ export class CreateUserComponent implements OnInit {
         this.lastNameInput = this.inputFactory("", [ Validators.required, Validators.maxLength(40) ], infoErrorMessages);
         this.emailInput = this.inputFactory("", [ Validators.required, Validators.email ], accErrorMessages);
         this.passwordInput = this.inputFactory("", [ Validators.required, Validators.minLength(6) ], accErrorMessages);
+        this.repeatPasswordInput = this.inputFactory("", [ Validators.required, Validators.minLength(6), this.utils.Validators.sameFields(this.passwordInput.element) ], accErrorMessages);
         this.create = this.fb.group({
             name: this.nameInput.element,
             surname: this.surnameInput.element,
             lastName: this.lastNameInput.element,
             email: this.emailInput.element,
-            password: this.passwordInput.element
+            password: this.passwordInput.element,
+            repeatPassword: this.repeatPasswordInput.element
         });
     }
 
@@ -146,7 +156,7 @@ export class CreateUserComponent implements OnInit {
     public submitForm(event: Event, value: any) {
         event.preventDefault();
         if (this.create.valid) {
-            this.account.create(value).subscribe((res) => {
+            this.account.create({ email: value.email, password: value.password, name: value.name, surname: value.surname, lastName: value.lastName }).subscribe((res) => {
                 this.handleCreate(res);
             }, (err) => {
                 this.handleErr(err);
