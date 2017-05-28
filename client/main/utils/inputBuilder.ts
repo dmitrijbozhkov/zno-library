@@ -15,10 +15,10 @@ export class ErrorInput {
     public messageList: IErrorMessages;
     public isErr: boolean;
     public errorMessage: string;
-    constructor(builder: FormBuilder, value: string, validators: any[], errorMessages?: IErrorMessages) {
+    constructor(builder: FormBuilder, init: string, validators: any[], errorMessages?: IErrorMessages) {
         this.messageList = errorMessages ? errorMessages : {};
         this.errorMessage = "";
-        this.element = builder.control({ value: value, disabled: false }, validators);
+        this.element = builder.control({ value: init, disabled: false }, validators);
         this.element.valueChanges.subscribe({
             next: (state) => {
                 this.refreshErr();

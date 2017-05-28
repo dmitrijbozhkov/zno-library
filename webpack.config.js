@@ -6,11 +6,12 @@ module.exports = [
     { // Settings for tests
         context: path.resolve(__dirname, "client"),
         entry: {
-            "app": "mocha-loader!./tests/src/bundle.test"
+            "component": "mocha-loader!./tests/src/components/bundle.test",
+            "service": "mocha-loader!./tests/src/services/bundle.test"
         },
         output: {
             path: path.resolve(__dirname, "client", "tests", "app"),
-            filename: "[name].js"
+            filename: "[name].test.js"
         },
         resolve: {
             extensions: [".ts", ".js", ".scss"]

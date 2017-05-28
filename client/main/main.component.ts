@@ -16,6 +16,7 @@ import { Component } from "@angular/core";
             <span class="space"></span>
             <logNav></logNav>
         </md-toolbar>
+        <loading></loading>
         <div class="content"><router-outlet></router-outlet></div>
     </md-sidenav-container>`
 })

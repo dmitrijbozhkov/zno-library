@@ -9,12 +9,16 @@ from sqlalchemy.orm import relationship
 
 Base = declarative_base(metadata=MetaData(schema="public"))
 
-db = SQLAlchemy()
-# Users        
+db = SQLAlchemy()     
 
-roles_users = Table('roles_users', Base.metadata,
-    Column('user_id', Integer, ForeignKey('user.id')),
-    Column('role_id', Integer, ForeignKey('role.id'))
+roles_users = Table("roles_users", Base.metadata,
+    Column("user_id", Integer, ForeignKey("user.id")),
+    Column("role_id", Integer, ForeignKey("role.id"))
+)
+
+tags_courses = Table("tags_courses", Base.metadata,
+    Column("tag_id", Integer, ForeignKey("tag.id")),
+    Column("course_id", String(32), ForeignKey("course.id"))
 )
 
 class User(Base, UserMixin):
@@ -24,12 +28,21 @@ class User(Base, UserMixin):
     def dictify(self):
         """ Turns model to dictionary """
         dictionary = {
-            "UserId": self.id,
-            "Name": self.name,
-            "Surname": self.surname,
-            "LastName": self.lastName,
-            "Email": self.email,
-            "Role": self.Roles.dictify()
+            "userId": self.id,
+            "name": self.name,
+            "surname": self.surname,
+            "lastName": self.lastName,
+            "email": self.email,
+            "roles": [role.name for role in self.roles]
+        }
+        return dictionary
+    def dictify_author(self):
+        """ Turns model as author into dictionary """
+        dictionary = {
+            "name": self.name,
+            "surname": self.surname,
+            "lastName": self.lastName,
+            "email": self.email
         }
         return dictionary
     id = Column(Integer, primary_key=True)
@@ -52,8 +65,8 @@ class Role(Base):
     def dictify(self):
         """ Turns model to dictionary """
         dictionary = {
-            "RoleId": self.id,
-            "Name": self.name
+            "roleId": self.id,
+            "name": self.name
         }
         return dictionary
     id = Column(Integer, primary_key=True)
@@ -70,23 +83,27 @@ class Course(Base):
     def dictify(self):
         """ Turns model into dictionary """
         dictionary = {
-            "CourseId": self.id,
-            "Name": self.name,
-            "Contents": self.contents,
-            "Preface": self.preface,
-            "PostTime": self.postTime,
-            "Autor": self.Author.dictify(),
+            "courseId": self.id,
+            "name": self.name,
+            "contents": self.contents,
+            "postTime": self.postTime,
+            "autor": self.author.dictify_author(),
             "description": self.description,
-            "preface": self.preface,
             "icon": self.icon,
             "rev": self.rev,
+            "tags": [ tag.dictify() for tag in self.tags ]
+        }
+        return dictionary
+    def dictify_preface(self):
+        """ Turns preface into dictionary """
+        dictionary = {
+            "preface": self.preface,
             "preface_images": [ image.dictify() for image in self.preface_images ]
         }
         return dictionary
     id = Column(String(32), primary_key=True)
     name = Column(String(200), nullable=False)
     contents = Column(Text, nullable=False)
-    preface = Column(Text, nullable=False)
     postTime = Column(DateTime, nullable=False)
     description = Column(Text, nullable=False)
     preface = Column(Text, nullable=False)
@@ -95,7 +112,7 @@ class Course(Base):
     authorId = Column(Integer, ForeignKey("user.id"), nullable=False)
     author = relationship("User", back_populates="courses")
     preface_images = relationship("PrefaceImage", back_populates="course")
-    # Tags = relationship("CoursesTagsXRef", back_populates="Courses")
+    tags = relationship("Tag", back_populates="courses", secondary=tags_courses)
     # ReadUsers = relationship("UserChapterRead", back_populates="Courses")
     # Chapters = relationship("CourseChapters", back_populates="Courses")
     # Tests = relationship("CourseTests", back_populates="Courses")
@@ -104,7 +121,7 @@ class PrefaceImage(Base):
     """ Describes table of preface images """
     __tablename__ = "preface_image"
     query = db.session.query_property()
-    def dictify():
+    def dictify(self):
         """ Turns model into dictionary """
         dictionary = {
             "id": self.id,
@@ -115,3 +132,18 @@ class PrefaceImage(Base):
     path = Column(String(200), nullable=False)
     courseId = Column(String(32), ForeignKey("course.id"), nullable=False)
     course = relationship("Course", back_populates="preface_images")
+
+class Tag(Base):
+    """ Describes table of course tags """
+    __tablename__ = "tag"
+    query = db.session.query_property()
+    def dictify(self):
+        """ Turns model into dictionary """
+        dictionary = {
+            "id": self.id,
+            "name": self.name
+        }
+        return dictionary
+    id = Column(Integer, primary_key=True)
+    name = Column(String(40), nullable=False)
+    courses = relationship("Course", back_populates="tags", secondary=tags_courses)

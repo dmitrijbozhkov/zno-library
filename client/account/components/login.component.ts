@@ -1,9 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup, FormControl, Validators, FormBuilder } from "@angular/forms";
-import { ErrorInput } from "../inputBuilder";
+import { MdSnackBar } from "@angular/material";
+import { Utils, ErrorInput, IErrorMessages, buildInput } from "../../main/utils/utils";
 import { AccountService } from "../services/account.service";
+import { ILoginCredentials } from "../services/account.service";
+import { Router } from "@angular/router";
 
-let errorMessages = {
+let errorMessages: IErrorMessages = {
     required: "Поле обязательно для заполнения",
     email: "Неправильный email",
     minlength: "Пароль должен быть не менее 6 символов"
@@ -40,26 +43,94 @@ let errorMessages = {
     </form>`
 })
 export class LoginComponent implements OnInit {
+    // services
+    private inputFactory: buildInput;
+    private fb: FormBuilder;
+    private account: AccountService;
+    private snackbar: MdSnackBar;
+    private router: Router;
+    private utils: Utils;
+    // Inputs
     public login: FormGroup;
     public emailInput: ErrorInput;
     public passwordInput: ErrorInput;
-    constructor(private fb: FormBuilder, private account: AccountService) {}
+    constructor(fb: FormBuilder, account: AccountService, utils: Utils, snackbar: MdSnackBar, router: Router) {
+        this.inputFactory = utils.inputFactory(fb);
+        this.fb = fb;
+        this.account = account;
+        this.snackbar = snackbar;
+        this.router = router;
+        this.utils = utils;
+    }
     public ngOnInit() {
         this.initForm();
     }
+
+    /**
+     * Initializes login form
+     */
     public initForm() {
-        this.emailInput = new ErrorInput(this.fb, "", [ Validators.required, Validators.email ], errorMessages);
-        this.passwordInput = new ErrorInput(this.fb, "", [ Validators.required, Validators.minLength(6) ], errorMessages);
+        this.emailInput = this.inputFactory("", [ Validators.required, Validators.email ], errorMessages);
+        this.passwordInput = this.inputFactory( "", [ Validators.required, Validators.minLength(6) ], errorMessages);
         this.login = this.fb.group({
             email: this.emailInput.element,
             password: this.passwordInput.element,
             remember: [ false ]
         });
     }
-    public submitForm(event: Event, value: any) {
-        event.preventDefault();
-        console.log(value);
+
+    /**
+     * Closes snackbar
+     */
+    private resetSnackbar() {
+        this.snackbar.dismiss();
     }
+
+    /**
+     * Handles successful login
+     * @param response Login response
+     */
+    private handleLogin(response) {
+        this.resetSnackbar();
+        this.snackbar.open("Авторизация успешна", "Ок", { duration: 5000 });
+        this.router.navigate([""]);
+    }
+
+    /**
+     * Handles login error
+     * @param err Error response
+     */
+    private handleError(error) {
+        if (!error.error) {
+            let parsedError = error.json();
+            this.resetSnackbar();
+            this.snackbar.open(`Ошибка: ${this.utils.translateErrorResponse(parsedError)}`, "Ok", { duration: 5000 });
+        } else {
+            throw new Error(error);
+        }
+        this.login.reset();
+    }
+
+    /**
+     * Submits login form
+     * @param event Submit event
+     * @param value Inputs values
+     */
+    public submitForm(event: Event, value: ILoginCredentials) {
+        event.preventDefault();
+        if (this.login.valid) {
+            this.account.logIn(value).subscribe((val) => {
+                this.handleLogin(val);
+            }, (err) => {
+                this.handleError(err);
+            });
+        }
+    }
+
+    /**
+     * Resets login form
+     * @param event Reset event
+     */
     public resetForm(event: Event) {
         this.login.reset();
         event.preventDefault();

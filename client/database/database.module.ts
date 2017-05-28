@@ -1,28 +1,12 @@
 import { NgModule } from "@angular/core";
-import { AccountDatabaseService } from "./account-database.service";
+import { DatabaseService } from "./database.service";
+export { DatabaseService } from "./database.service";
+export { DatabaseClient, BaseDatabaseClient } from "./databaseClient";
 export { AccountDatabaseService } from "./account-database.service";
-
-/**
- * Interface of database errors
- */
-export interface IDatabaseError {
-    error: boolean;
-    message: string;
-    name: string;
-    reason: string;
-    status: number;
-}
-
-/**
- * Interface of database responses
- */
-export interface IdatabaseResponse {
-    _id: string;
-    _rev: string;
-    [data: string]: string;
-}
+export { InMemoryStore } from "./inMemoryStore";
+export { IUserDoc } from "./interfaces";
 
 @NgModule({
-    providers: [ AccountDatabaseService ]
+    providers: []
 })
 export class DatabaseModule {}
