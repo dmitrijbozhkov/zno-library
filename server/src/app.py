@@ -16,7 +16,7 @@ app.config["DEBUG"] = True
 app.config["SECRET_KEY"] = "super-secret"
 app.config["SECURITY_PASSWORD_HASH"] = "bcrypt"
 app.config["SECURITY_PASSWORD_SALT"] = "$2a$16$PnnIgfMwkOjGX4SkHqSOPO"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 
 db.init_app(app)
 

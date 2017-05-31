@@ -7,6 +7,4 @@ app.register_blueprint(api)
 app.register_blueprint(auth)
 
 if __name__ == "__main__":
-    # database = create_db(connection_str)
-    # attach_db(g, database)
     app.run(port=3000)

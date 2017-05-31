@@ -145,5 +145,5 @@ class Tag(Base):
         }
         return dictionary
     id = Column(Integer, primary_key=True)
-    name = Column(String(40), nullable=False)
+    name = Column(String(40), nullable=False, unique=True)
     courses = relationship("Course", back_populates="tags", secondary=tags_courses)

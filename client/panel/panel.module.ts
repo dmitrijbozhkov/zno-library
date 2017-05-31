@@ -13,6 +13,9 @@ import { AdminPanelComponent } from "./components/admin-panel.component";
 import { HistoryService } from "./services/history.service";
 import { AddCourseComponent } from "./components/course/add-course.component";
 import { RemoveCourseComponent } from "./components/course/remove-course.component";
+import { HistoryStudentComponent } from "./components/history/history-student.component";
+import { AdminRolesComponent } from "./components/admin/admin-roles.component";
+import { AddCourseService } from "./services/add-course.service";
 
 let panelRoutes: Routes = [
     { path: "user", component: PanelNavComponent, canActivate: [ LoginGuard ], children: [
@@ -22,7 +25,9 @@ let panelRoutes: Routes = [
         { path: "teacher", component: TeacherPanelComponent, canActivate: [ TeacherGuard ] },
         { path: "course/add", component: AddCourseComponent, canActivate: [ TeacherGuard ] },
         { path: "course/remove", component: RemoveCourseComponent, canActivate: [ TeacherGuard ] },
+        { path: "history/students", component: HistoryStudentComponent, canActivate: [ TeacherGuard ] },
         { path: "admin", component: AdminPanelComponent, canActivate: [ AdminGuard ] },
+        { path: "admin/manage", component: AdminRolesComponent, canActivate: [ AdminGuard ] }
     ] }
 ];
 
@@ -35,8 +40,10 @@ let panelRoutes: Routes = [
         TeacherPanelComponent,
         AdminPanelComponent,
         AddCourseComponent,
-        RemoveCourseComponent
+        RemoveCourseComponent,
+        HistoryStudentComponent,
+        AdminRolesComponent
     ],
-    providers: [ HistoryService ]
+    providers: [ HistoryService, AddCourseService ]
 })
 export class PanelModule {}
