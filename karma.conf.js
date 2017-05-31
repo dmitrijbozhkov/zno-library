@@ -1,16 +1,16 @@
 var path = require('path');
 
-var webpackConfig = require('./webpack.config');
+var webpackConfig = require('./webpack.karma.config');
 
 module.exports = function (config) {
   var _config = {
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
+    basePath: __dirname,
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine', 'webpack'],
+    frameworks: ['jasmine'],
 
     // list of files / patterns to load in the browser
     files: [
@@ -41,7 +41,7 @@ module.exports = function (config) {
     // test results reporter to use
     // possible values: 'dots', 'progress', 'mocha'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ["mocha"],
+    reporters: ["mocha", "coverage"],
 
     // web server port
     port: 9876,
@@ -62,18 +62,16 @@ module.exports = function (config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: true
-  };
-
-  _config.reporters.push("coverage");
-  _config.coverageReporter = {
-    dir: 'coverage/',
-    reporters: [{
-      type: 'json',
-      dir: 'coverage',
-      subdir: 'json',
-      file: 'coverage-final.json'
-    }]
+    singleRun: true,
+    coverageReporter: {
+      dir: 'coverage/',
+      reporters: [{
+        type: 'json',
+        dir: 'coverage',
+        subdir: 'json',
+        file: 'coverage-final.json'
+      }]
+    }
   };
   config.set(_config);
 

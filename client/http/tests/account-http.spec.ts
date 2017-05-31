@@ -11,20 +11,20 @@ import { MockBackend } from "@angular/http/testing";
 describe("Tests for AccountHttpService", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({ providers: [
+            AccountHttpService,
             Utils,
             BaseRequestOptions,
             MockBackend,
             {
                 provide: Http,
                 deps: [ MockBackend, BaseRequestOptions ],
-                useFactory: function(backend, defaultOptions) {
+                useFactory: function(backend: XHRBackend, defaultOptions: BaseRequestOptions) {
                     return new Http(backend, defaultOptions);
                 }
             }]
         });
-        TestBed.compileComponents();
     });
-    it("loginUser should call", inject([ AccountHttpService ], (api) => {
+    it("loginUser should call", inject([ AccountHttpService ], (api: AccountHttpService) => {
         expect(true).toBe(true);
     }));
 });
