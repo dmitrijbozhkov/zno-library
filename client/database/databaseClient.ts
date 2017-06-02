@@ -56,6 +56,13 @@ export class BaseDatabaseClient {
     }
 
     /**
+     * Returns if database is set
+     */
+    public isSetDb() {
+        return !!this.database;
+    }
+
+    /**
      * Disposes database connection
      */
     public dispose() {

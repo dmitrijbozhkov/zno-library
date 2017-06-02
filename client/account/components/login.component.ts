@@ -6,7 +6,7 @@ import { AccountService } from "../services/account.service";
 import { ILoginCredentials } from "../services/account.service";
 import { Router } from "@angular/router";
 
-let errorMessages: IErrorMessages = {
+export let errorMessages: IErrorMessages = {
     required: "Поле обязательно для заполнения",
     email: "Неправильный email",
     minlength: "Пароль должен быть не менее 6 символов"
@@ -17,25 +17,25 @@ let errorMessages: IErrorMessages = {
     template: `
     <form class="login-form" [formGroup]="login" (ngSubmit)="submitForm($event, login.value)">
         <md-list class="content-window">
-            <md-list-item class="login-item"><h1>Вход в аккаунт</h1></md-list-item>
-            <md-list-item class="login-input login-item">
+            <md-list-item class="form-item"><h1>Вход в аккаунт</h1></md-list-item>
+            <md-list-item class="form-input form-item">
                 <md-input-container>
                     <input mdInput required placeholder="Email" type="email" formControlName="email" />
                     <md-error *ngIf="emailInput.isErr">{{ emailInput.errorMessage }}</md-error>
                 </md-input-container>
             </md-list-item>
-            <md-list-item class="login-input login-item">
+            <md-list-item class="form-input form-item">
                 <md-input-container>
                     <input mdInput required placeholder="Пароль" type="password" formControlName="password" />
                     <md-error *ngIf="passwordInput.isErr">{{ passwordInput.errorMessage }}</md-error>
                 </md-input-container>
             </md-list-item>
-            <md-list-item class="login-item">
+            <md-list-item class="form-item">
                 <md-checkbox formControlName="remember">Запомнить меня</md-checkbox>
             </md-list-item>
-            <md-list-item class="login-item">
+            <md-list-item class="form-item">
                 <div class="button-wrapper">
-                    <button md-raised-button class="clean-login" type="reset" (click)="resetForm($event)">Очистить</button>
+                    <button md-raised-button class="clean-login account" type="reset" (click)="resetForm($event)">Очистить</button>
                     <button md-raised-button class="send-login" type="submit">Отправить</button>
                 </div>
             </md-list-item>
@@ -92,7 +92,7 @@ export class LoginComponent implements OnInit {
      */
     private handleLogin(response) {
         this.resetSnackbar();
-        this.snackbar.open("Авторизация успешна", "Ок", { duration: 5000 });
+        this.snackbar.open("Авторизация успешна", "Ok", { duration: 5000 });
         this.router.navigate([""]);
     }
 

@@ -11,7 +11,8 @@ import {
     MdSnackBarModule,
     MdProgressBarModule,
     MdTabsModule,
-    MdCardModule
+    MdCardModule,
+    MdMenuModule
 } from "@angular/material";
 import { MdIconRegistry } from "@angular/material";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -31,7 +32,8 @@ import { BrowserModule } from "@angular/platform-browser";
         BrowserModule,
         MdProgressBarModule,
         MdTabsModule,
-        MdCardModule
+        MdCardModule,
+        MdMenuModule
     ],
     exports: [
         MdToolbarModule,
@@ -46,7 +48,8 @@ import { BrowserModule } from "@angular/platform-browser";
         BrowserModule,
         MdProgressBarModule,
         MdTabsModule,
-        MdCardModule
+        MdCardModule,
+        MdMenuModule
     ],
     providers: [ MdIconRegistry ]
 })

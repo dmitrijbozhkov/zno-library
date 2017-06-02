@@ -36,11 +36,4 @@ export class ErrorInput {
         }
         this.isErr = this.element.invalid;
     }
-    /**
-     * Sets fields value
-     * @param value Value of a field
-     */
-    public setValue(value: any) {
-        this.element.setValue(value);
-    }
 }

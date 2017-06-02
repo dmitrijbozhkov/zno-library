@@ -61,20 +61,21 @@ export class AccountService {
         this.http = http;
         this.loading = loading;
         this.database = database;
-        this.initAccount();
     }
 
     /**
      * Initializes account service
      */
     public initAccount() {
-        this.state.next(TokenState["pending"]);
-        this.database.addDatabase(new this.pouch("user", { auto_compaction: true }));
-        this.checkAuth().subscribe((response) => {
-            this.state.next(TokenState["authorized"]);
-        }, (err) => {
-            this.state.next(TokenState["unauthorized"]);
-        });
+        if (!this.database.getDatabase().isSetDb()) {
+            this.state.next(TokenState["pending"]);
+            this.database.addDatabase(new this.pouch("user", { auto_compaction: true }));
+            this.checkAuth().subscribe((response) => {
+                this.state.next(TokenState["authorized"]);
+            }, (err) => {
+                this.state.next(TokenState["unauthorized"]);
+            });
+        }
     }
 
     /**

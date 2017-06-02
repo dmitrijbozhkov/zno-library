@@ -18,6 +18,7 @@ export class LogNavComponent implements OnInit {
      * Listens for changes in authorization state
      */
     public ngOnInit() {
+        this.account.initAccount();
         this.account.state.subscribe({
             next: (state) => {
                 this.loginState = state;

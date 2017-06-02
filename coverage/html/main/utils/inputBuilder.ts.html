@@ -20,28 +20,28 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">29.41% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>5/17</span>
+        <span class='fraction'>15/15</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>0/6</span>
+        <span class='fraction'>6/6</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">20% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>1/5</span>
+        <span class='fraction'>4/4</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">25% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>4/16</span>
+        <span class='fraction'>14/14</span>
       </div>
     </div>
   </div>
-  <div class='status-line low'></div>
+  <div class='status-line high'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet">1
 2
@@ -82,14 +82,7 @@
 37
 38
 39
-40
-41
-42
-43
-44
-45
-46
-47</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+40</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -106,33 +99,26 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">155×</span>
+<span class="cline-any cline-yes">155×</span>
+<span class="cline-any cline-yes">155×</span>
+<span class="cline-any cline-yes">155×</span>
+<span class="cline-any cline-yes">155×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">86×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">155×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">241×</span>
+<span class="cline-any cline-yes">197×</span>
+<span class="cline-any cline-yes">197×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">241×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { AbstractControl, FormBuilder } from "@angular/forms";
@@ -152,33 +138,26 @@ export class ErrorInput {
     public messageList: IErrorMessages;
     public isErr: boolean;
     public errorMessage: string;
-<span class="cstat-no" title="statement not covered" >    constructor(builder: FormBuilder, init: string, validators: any[], errorMessages?: IErrorMessages<span class="fstat-no" title="function not covered" >) {</span></span>
-<span class="cstat-no" title="statement not covered" >        this.messageList = errorMessages ? errorMessages : {};</span>
-<span class="cstat-no" title="statement not covered" >        this.errorMessage = "";</span>
-<span class="cstat-no" title="statement not covered" >        this.element = builder.control({ value: init, disabled: false }, validators);</span>
-<span class="cstat-no" title="statement not covered" >        this.element.valueChanges.subscribe({</span>
-            next: (state<span class="fstat-no" title="function not covered" >) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >                this.refreshErr();</span>
+    constructor(builder: FormBuilder, init: string, validators: any[], errorMessages?: IErrorMessages) {
+        this.messageList = errorMessages ? errorMessages : {};
+        this.errorMessage = "";
+        this.element = builder.control({ value: init, disabled: false }, validators);
+        this.element.valueChanges.subscribe({
+            next: (state) =&gt; {
+                this.refreshErr();
             }
         });
-<span class="cstat-no" title="statement not covered" >        this.refreshErr();</span>
+        this.refreshErr();
     }
     /**
      * Refreshes fields error state
      */
-<span class="fstat-no" title="function not covered" >    public refreshErr() {</span>
-<span class="cstat-no" title="statement not covered" >        if (this.element.invalid) {</span>
-            let key = <span class="cstat-no" title="statement not covered" >Object.keys(this.element.errors)[0];</span>
-<span class="cstat-no" title="statement not covered" >            this.errorMessage = this.messageList[key] ? this.messageList[key] : key;</span>
+    public refreshErr() {
+        if (this.element.invalid) {
+            let key = Object.keys(this.element.errors)[0];
+            this.errorMessage = this.messageList[key] ? this.messageList[key] : key;
         }
-<span class="cstat-no" title="statement not covered" >        this.isErr = this.element.invalid;</span>
-    }
-    /**
-     * Sets fields value
-     * @param value Value of a field
-     */
-    public setValue(value: any<span class="fstat-no" title="function not covered" >) {</span>
-<span class="cstat-no" title="statement not covered" >        this.element.setValue(value);</span>
+        this.isErr = this.element.invalid;
     }
 }
 &nbsp;</pre></td></tr>
@@ -187,7 +166,7 @@ export class ErrorInput {
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed May 31 2017 12:40:23 GMT+0300 (FLE Summer Time)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Jun 02 2017 14:38:25 GMT+0300 (FLE Summer Time)
 </div>
 </div>
 <script src="../../prettify.js"></script>

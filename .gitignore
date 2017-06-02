@@ -1,5 +1,6 @@
 node_modules/
 static/
+coverage/
 client/tests/app/
 server/metodichka-api/
 server/src/alembic/__pycache__/

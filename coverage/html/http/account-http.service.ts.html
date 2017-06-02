@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">47.83% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>11/23</span>
+        <span class='fraction'>23/23</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
@@ -30,18 +30,18 @@
         <span class='fraction'>0/0</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">33.33% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>2/6</span>
+        <span class='fraction'>6/6</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">47.37% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>9/19</span>
+        <span class='fraction'>19/19</span>
       </div>
     </div>
   </div>
-  <div class='status-line low'></div>
+  <div class='status-line high'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet">1
 2
@@ -95,20 +95,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-yes">8×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -116,12 +116,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
@@ -144,12 +144,12 @@ export class AccountHttpService {
      * Logs in user
      * @param credentials Observable of login credentials
      */
-<span class="cstat-no" title="statement not covered" >    public loginUser(credentials: Observable&lt;ILoginCredentials&gt;<span class="fstat-no" title="function not covered" >): Observable&lt;Response&gt; {</span></span>
-        let content = <span class="cstat-no" title="statement not covered" >this.utils.JsonType();</span>
-        let options = <span class="cstat-no" title="statement not covered" >new RequestOptions({ headers: content });</span>
-<span class="cstat-no" title="statement not covered" >        return credentials.map((req<span class="fstat-no" title="function not covered" >) =&gt; {</span></span>
-            let response = <span class="cstat-no" title="statement not covered" >this.http.post("auth/login/", { email: req.email, password: req.password }, options);</span>
-<span class="cstat-no" title="statement not covered" >            return response;</span>
+    public loginUser(credentials: Observable&lt;ILoginCredentials&gt;): Observable&lt;Response&gt; {
+        let content = this.utils.JsonType();
+        let options = new RequestOptions({ headers: content });
+        return credentials.map((req) =&gt; {
+            let response = this.http.post("auth/login/", { email: req.email, password: req.password }, options);
+            return response;
         }).concatAll();
     }
 &nbsp;
@@ -157,12 +157,12 @@ export class AccountHttpService {
      * Creates new user
      * @param credentials Observable of create credentials
      */
-<span class="cstat-no" title="statement not covered" >    public createUser(credentials: Observable&lt;ICreate&gt;<span class="fstat-no" title="function not covered" >) {</span></span>
-        let content = <span class="cstat-no" title="statement not covered" >this.utils.JsonType();</span>
-        let options = <span class="cstat-no" title="statement not covered" >new RequestOptions({ headers: content });</span>
-<span class="cstat-no" title="statement not covered" >        return credentials.map((req<span class="fstat-no" title="function not covered" >) =&gt; {</span></span>
-            let response = <span class="cstat-no" title="statement not covered" >this.http.post("auth/create/", req, options);</span>
-<span class="cstat-no" title="statement not covered" >            return response;</span>
+    public createUser(credentials: Observable&lt;ICreate&gt;) {
+        let content = this.utils.JsonType();
+        let options = new RequestOptions({ headers: content });
+        return credentials.map((req) =&gt; {
+            let response = this.http.post("auth/create/", req, options);
+            return response;
         }).concatAll();
     }
 }
@@ -172,7 +172,7 @@ export class AccountHttpService {
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed May 31 2017 12:40:23 GMT+0300 (FLE Summer Time)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Jun 02 2017 14:38:25 GMT+0300 (FLE Summer Time)
 </div>
 </div>
 <script src="../prettify.js"></script>

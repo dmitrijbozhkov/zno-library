@@ -3,33 +3,6 @@ var extract_text = require("extract-text-webpack-plugin");
 var webpack = require("webpack");
 
 module.exports = [
-    // { // Settings for tests
-    //     context: path.resolve(__dirname, "client"),
-    //     entry: {
-    //         "component": "mocha-loader!./tests/src/components/bundle.test",
-    //         "service": "mocha-loader!./tests/src/services/bundle.test"
-    //     },
-    //     output: {
-    //         path: path.resolve(__dirname, "client", "tests", "app"),
-    //         filename: "[name].test.js"
-    //     },
-    //     resolve: {
-    //         extensions: [".ts", ".js", ".scss"]
-    //     },
-    //     module: {
-    //         rules: [
-    //             {
-    //                 test: /\.ts$/,
-    //                 use: ["ts-loader"]
-    //             },
-    //             {
-    //                 test: /\.scss$/,
-    //                 use: ["ignore-loader"]
-    //             }
-    //         ]
-    //     },
-    //     devtool: "source-map"
-    // },
     { // Settings fot client
         context: path.resolve(__dirname, "client"),
         entry: {
@@ -46,7 +19,8 @@ module.exports = [
             rules: [
                 {
                     test: /\.ts$/,
-                    use: ["awesome-typescript-loader"]
+                    use: ["awesome-typescript-loader"],
+                    exclude: [ /\.(spec)\.ts$/ ]
                 }
             ]
         },
@@ -82,18 +56,21 @@ module.exports = [
                     use: extract_text.extract({
                         fallback: "style-loader",
                         use: ["css-loader", "sass-loader"]
-                    })
+                    }),
+                    exclude: [ /\.(spec)\.ts$/ ]
                 },
                 {
                     test: /\.css$/,
                     use: extract_text.extract({
                         fallback: "style-loader",
                         use: ["css-loader"]
-                    })
+                    }),
+                    exclude: [ /\.(spec)\.ts$/ ]
                 },
                 {
                     test: /\.(eot|svg|ttf|woff|woff2|otf)$/,
-                    use: "file-loader?name=[name].[ext]"
+                    use: "file-loader?name=[name].[ext]",
+                    exclude: [ /\.(spec)\.ts$/ ]
                 }
             ]
         },

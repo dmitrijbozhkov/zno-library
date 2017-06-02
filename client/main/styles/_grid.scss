@@ -13,9 +13,9 @@ $desktop: 1201px;
         box-shadow: 0 1px 2px rgba(0,0,0,.1);
         padding: 5px;
     }
-    .login-item {
+    .form-item {
         padding: 10px;
-        .clean-login {
+        .clean-item {
             margin-right: 10px;
         }
         .button-wrapper {
@@ -23,7 +23,7 @@ $desktop: 1201px;
             margin-left: auto;
         }
     }
-    .login-input {
+    .form-input {
         .mat-list-item-content {
             height: auto !important;
             .mat-input-container {
@@ -31,4 +31,11 @@ $desktop: 1201px;
             }
         }
     }
+}
+
+$tag-height: (48px * 4) + 16;
+
+.tagMenu {
+    max-height: $tag-height !important;
+    overflow: scroll;
 }

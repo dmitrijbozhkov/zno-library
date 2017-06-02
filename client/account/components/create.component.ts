@@ -6,12 +6,12 @@ import { Response } from "@angular/http";
 import { Router } from "@angular/router";
 import { MdSnackBar } from "@angular/material";
 
-let infoErrorMessages = {
+export let infoErrorMessages = {
     required: "Поле обязательно для заполнения",
-    maxLength: "Не более 40 сиволов"
+    maxlength: "Не более 40 сиволов"
 };
 
-let accErrorMessages = {
+export let accErrorMessages = {
     email: "Неправильный email",
     minlength: "Пароль должен быть не менее 6 символов",
     required: "Поле обязательно для заполнения",
@@ -23,44 +23,44 @@ let accErrorMessages = {
     template: `
     <form class="login-form" [formGroup]="create" (ngSubmit)="submitForm($event, create.value)">
         <md-list class="content-window">
-            <md-list-item class="login-item"><h1>Создать аккаунт</h1></md-list-item>
-            <md-list-item class="login-input login-item">
+            <md-list-item class="form-item"><h1>Создать аккаунт</h1></md-list-item>
+            <md-list-item class="form-input form-item">
                 <md-input-container>
                     <input mdInput required placeholder="Имя" type="text" formControlName="name" />
                     <md-error *ngIf="nameInput.isErr">{{ nameInput.errorMessage }}</md-error>
                 </md-input-container>
             </md-list-item>
-            <md-list-item class="login-input login-item">
+            <md-list-item class="form-input form-item">
                 <md-input-container>
                     <input mdInput required placeholder="Фамилия" type="text" formControlName="surname" />
                     <md-error *ngIf="surnameInput.isErr">{{ surnameInput.errorMessage }}</md-error>
                 </md-input-container>
             </md-list-item>
-            <md-list-item class="login-input login-item">
+            <md-list-item class="form-input form-item">
                 <md-input-container>
                     <input mdInput required placeholder="Отчество" type="text" formControlName="lastName" />
                     <md-error *ngIf="lastNameInput.isErr">{{ lastNameInput.errorMessage }}</md-error>
                 </md-input-container>
             </md-list-item>
-            <md-list-item class="login-input login-item">
+            <md-list-item class="form-input form-item">
                 <md-input-container>
                     <input mdInput required placeholder="Email" type="email" formControlName="email" />
                     <md-error *ngIf="emailInput.isErr">{{ emailInput.errorMessage }}</md-error>
                 </md-input-container>
             </md-list-item>
-            <md-list-item class="login-input login-item">
+            <md-list-item class="form-input form-item">
                 <md-input-container>
                     <input mdInput required placeholder="Пароль" type="password" formControlName="password" />
                     <md-error *ngIf="passwordInput.isErr">{{ passwordInput.errorMessage }}</md-error>
                 </md-input-container>
             </md-list-item>
-            <md-list-item class="login-input login-item">
+            <md-list-item class="form-input form-item">
                 <md-input-container>
                     <input mdInput required placeholder="Повторите пароль" type="password" formControlName="repeatPassword" />
                     <md-error *ngIf="repeatPasswordInput.isErr">{{ repeatPasswordInput.errorMessage }}</md-error>
                 </md-input-container>
             </md-list-item>
-            <md-list-item class="login-item">
+            <md-list-item class="form-item">
                 <div class="link-wrapper">
                     <a routerLink="../login" routerLinkActive="active">Уже есть аккаунт?</a>
                 </div>
