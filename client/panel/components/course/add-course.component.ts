@@ -1,16 +1,19 @@
-import { Component, OnInit } from "@angular/core";
-import { FormGroup, FormControl, Validators, FormBuilder } from "@angular/forms";
-import { Utils, ErrorInput, IErrorMessages, buildInput } from "../../../main/utils/utils";
+import { Component, OnInit, Output } from "@angular/core";
+import { FormGroup, FormControl, Validators, FormBuilder, AbstractControl } from "@angular/forms";
+import { Utils } from "../../../main/utils/utils";
+import { MdSnackBar, MdDialog } from "@angular/material";
 import { Router } from "@angular/router";
 import { AddCourseService } from "../../services/add-course.service";
+import { IErrorMessages } from "../../../main/inputs/reactive-input.component";
 
-const errList: IErrorMessages = {
-    required: "Поле обязательно для заполнения"
+export const errList: IErrorMessages = {
+    required: "Поле обязательно для заполнения",
+    nameError: "Данное имя уже занято"
 };
 
-export interface ITag {
-    id: number;
-    name: string;
+export interface IIdError {
+    isErr: boolean;
+    message: string;
 }
 
 @Component({
@@ -24,25 +27,10 @@ export interface ITag {
             <form [formGroup]="addCourse" (ngSubmit)="submitForm($event, login.value)">
                 <md-list>
                     <md-list-item class="form-input form-item">
-                        <md-input-container>
-                            <input mdInput required placeholder="Название курса" type="text" formControlName="name" />
-                            <md-error *ngIf="nameInput.isErr">{{ nameInput.errorMessage }}</md-error>
-                        </md-input-container>
+                        <reactive-input [group]="addCourse" [errorList]="errList" [controlName]="'name'" [type]="'text'" [placeholder]="'Название курса'" required="true">
+                        </reactive-input>
                     </md-list-item>
-                    <md-list-item>
-                        <div>Теги: </div>
-                        <div *ngFor="let tag of courseTags"> {{ tag.name }} </div>
-                        <button md-icon-button [mdMenuTriggerFor]="tagMenu" type="button"><md-icon>local_hospital</md-icon></button>
-                        <md-menu #tagMenu="mdMenu" class="tagMenu">
-                            <div md-menu-item disabled>
-                                <md-input-container>
-                                    <input mdInput placeholder="Найти тег" type="text"/>
-                                </md-input-container>
-                            </div>
-                            <button md-menu-item><md-icon>note_add</md-icon> Добавить тег</button>
-                            <button *ngFor="let tag of tags" (click)="addTag(tag)" md-menu-item>{{ tag.name }}</button>
-                        </md-menu>
-                    </md-list-item>
+                    <add-tag></add-tag>
                 </md-list>
             </form>
         </md-card-content>
@@ -53,50 +41,53 @@ export class AddCourseComponent implements OnInit {
     // services
     private utils: Utils;
     private manager: AddCourseService;
-    private inputFactory: buildInput;
     private fb: FormBuilder;
+    private snackbar: MdSnackBar;
+    private dialog: MdDialog;
     // form
-    public addCourse: FormGroup;
-    public nameInput: ErrorInput;
-    // tags
-    public courseTags: ITag[];
-    public tags: ITag[];
-    constructor(utils: Utils, manager: AddCourseService, fb: FormBuilder) {
+    @Output() public addCourse: FormGroup;
+    @Output() public errList: IErrorMessages;
+    constructor(utils: Utils, manager: AddCourseService, fb: FormBuilder, snackbar: MdSnackBar, dialog: MdDialog) {
         this.utils = utils;
         this.manager = manager;
-        this.inputFactory = utils.inputFactory(fb);
         this.fb = fb;
-        this.courseTags = [];
-        this.tags = [ { id: 1, name: "Math" }, { id: 2, name: "Literature" } ];
+        this.snackbar = snackbar;
+        this.dialog = dialog;
+        this.errList = errList;
     }
 
     /**
      * Initializes component
      */
-    ngOnInit() {
+     public ngOnInit() {
         this.initForm();
     }
 
     /**
      * Initializes form
      */
-    initForm() {
-        this.nameInput = this.inputFactory("", [ Validators.required ], errList);
+    public initForm() {
         this.addCourse = this.fb.group({
-            name: this.nameInput.element
+            name: this.fb.control("", [ Validators.required ])
         });
     }
 
     /**
-     * Opens menu of avalible tags
+     * Checks course name
      */
-    public openTagMenu(event) {
-        console.log("open");
-        event.preventDefault();
-    }
-
-    public addTag(tag) {
-        console.log(tag);
+    public checkCourseName() {
+        let nameControl = this.addCourse.controls.name;
+        if (nameControl.value) {
+            this.manager.addCourseName(nameControl.value)
+            .subscribe((id) => {
+                nameControl.setErrors({});
+                nameControl.setValue(nameControl.value);
+            }, (err) => {
+                nameControl.setErrors({
+                    nameError: true
+                });
+            });
+        }
     }
 
     /**

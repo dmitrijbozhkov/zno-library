@@ -5,7 +5,7 @@ import { Utils } from "../main/utils/utils";
 import { Observable } from "rxjs";
 
 @Injectable()
-export class AddCourseHttpService {
+export class CourseHttpService {
     private http: Http;
     private utils: Utils;
     constructor(@Inject(Http) http: Http, @Inject(Utils) utils: Utils) {

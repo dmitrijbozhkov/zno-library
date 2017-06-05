@@ -1,6 +1,6 @@
 import { TestBed, async, getTestBed, ComponentFixture } from "@angular/core/testing";
 import { AddCourseService } from "../add-course.service";
-import { AddCourseHttpService } from "../../../http/http.module";
+import { CourseHttpService } from "../../../http/http.module";
 import { DatabaseService } from "../../../database/database.service";
 import { Observable } from "rxjs";
 
@@ -15,13 +15,13 @@ describe("AddCourseService tests", () => {
         TestBed.configureTestingModule({
             providers: [
                 AddCourseService,
-                { provide: AddCourseHttpService, useClass: AddCourseHttpMock },
+                { provide: CourseHttpService, useClass: AddCourseHttpMock },
                 { provide: DatabaseService, useClass: DatabaseServiceMock }
             ]
         });
         let bed = getTestBed();
         service = bed.get(AddCourseService);
-        http = bed.get(AddCourseHttpService);
+        http = bed.get(CourseHttpService);
         database = bed.get(DatabaseService);
     });
     it("should be created");

@@ -1,7 +1,7 @@
 import { CreateUserComponent, infoErrorMessages, accErrorMessages } from "../create.component";
 import { TestBed, async, getTestBed, ComponentFixture } from "@angular/core/testing";
 import { MdSnackBar } from "@angular/material";
-import { Utils, ErrorInput, IErrorMessages, buildInput } from "../../../main/utils/utils";
+import { Utils} from "../../../main/utils/utils";
 import { ReactiveFormsModule } from "@angular/forms";
 import { AccountService } from "../../services/account.service";
 import { Router } from "@angular/router";
@@ -54,85 +54,6 @@ describe("CreateUserComponent tests", () => {
         bar = getTestBed().get(MdSnackBar);
         router = getTestBed().get(Router);
     });
-    it("nameInput should have errorMessage equal to 'Поле обязательно для заполнения' if field is not filled", () => {
-        let component = fixture.componentInstance;
-        component.ngOnInit();
-        component.nameInput.element.markAsDirty()
-        expect(component.nameInput.errorMessage).toBe(infoErrorMessages.required);
-    });
-    it("surnameInput should have errorMessage equal to 'Поле обязательно для заполнения' if field is not filled", () => {
-        let component = fixture.componentInstance;
-        component.ngOnInit();
-        component.surnameInput.element.markAsDirty();
-        expect(component.surnameInput.errorMessage).toBe(infoErrorMessages.required);
-    });
-    it("lastNameInput should have errorMessage equal to 'Поле обязательно для заполнения' if field is not filled", () => {
-        let component = fixture.componentInstance;
-        component.ngOnInit();
-        component.lastNameInput.element.markAsDirty();
-        expect(component.lastNameInput.errorMessage).toBe(infoErrorMessages.required);
-    });
-    it("emailInput should have errorMessage equal to 'Поле обязательно для заполнения' if field is not filled", () => {
-        let component = fixture.componentInstance;
-        component.ngOnInit();
-        component.emailInput.element.markAsDirty();
-        expect(component.emailInput.errorMessage).toBe(infoErrorMessages.required);
-    });
-    it("passwordInput should have errorMessage equal to 'Поле обязательно для заполнения' if field is not filled", () => {
-        let component = fixture.componentInstance;
-        component.ngOnInit();
-        component.passwordInput.element.markAsDirty();
-        expect(component.passwordInput.errorMessage).toBe(infoErrorMessages.required);
-    });
-    it("repeatPasswordInput should have errorMessage equal to 'Поле обязательно для заполнения' if field is not filled", () => {
-        let component = fixture.componentInstance;
-        component.ngOnInit();
-        component.repeatPasswordInput.element.markAsDirty();
-        expect(component.repeatPasswordInput.errorMessage).toBe(infoErrorMessages.required);
-    });
-    it("nameInput should have errorMessage equal to 'Не более 40 сиволов' if more than 40 characters passed", () => {
-        let component = fixture.componentInstance;
-        component.ngOnInit();
-        component.nameInput.element.setValue("asdfghjkloiuytrewqasdfghjkl,mnbvcxzaqwertyuiok");
-        expect(component.nameInput.errorMessage).toBe(infoErrorMessages.maxlength);
-    });
-    it("surnameInput should have errorMessage equal to 'Не более 40 сиволов' if more than 40 characters passed", () => {
-        let component = fixture.componentInstance;
-        component.ngOnInit();
-        component.surnameInput.element.setValue("asdfghjkloiuytrewqasdfghjkl,mnbvcxzaqwertyuiok");
-        expect(component.surnameInput.errorMessage).toBe(infoErrorMessages.maxlength);
-    });
-    it("lastNameInput should have errorMessage equal to 'Не более 40 сиволов' if more than 40 characters passed", () => {
-        let component = fixture.componentInstance;
-        component.ngOnInit();
-        component.lastNameInput.element.setValue("asdfghjkloiuytrewqasdfghjkl,mnbvcxzaqwertyuiok");
-        expect(component.lastNameInput.errorMessage).toBe(infoErrorMessages.maxlength);
-    });
-    it("emailInput should have errorMessage equal to 'Неправильный email' if value is not email", () => {
-        let component = fixture.componentInstance;
-        component.ngOnInit();
-        component.emailInput.element.setValue("pepe");
-        expect(component.emailInput.errorMessage).toBe(accErrorMessages.email);
-    });
-    it("passwordInput should have errorMessage equal to 'Пароль должен быть не менее 6 символов' if value is less than 6 characters long", () => {
-        let component = fixture.componentInstance;
-        component.ngOnInit();
-        component.passwordInput.element.setValue("pepe");
-        expect(component.passwordInput.errorMessage).toBe(accErrorMessages.minlength);
-    });
-    it("repeatPasswordInput should have errorMessage equal to 'Пароль должен быть не менее 6 символов' if value is less than 6 characters long", () => {
-        let component = fixture.componentInstance;
-        component.ngOnInit();
-        component.repeatPasswordInput.element.setValue("pepe");
-        expect(component.repeatPasswordInput.errorMessage).toBe(accErrorMessages.minlength);
-    });
-    it("repeatPasswordInput should have errorMessage equal to 'Пароли должны совпадать' if value is not equal to value of passwordInput", () => {
-        let component = fixture.componentInstance;
-        component.ngOnInit();
-        component.passwordInput.element.setValue("lelepeps");
-        component.repeatPasswordInput.element.setValue("pepeasdasd");
-        expect(component.repeatPasswordInput.errorMessage).toBe(accErrorMessages.sameFields);
-    });
     it("submitForm should call preventDefault on submit event", (done) => {
         let component = fixture.componentInstance;
         account.fromCreate = () => { };
@@ -151,12 +72,12 @@ describe("CreateUserComponent tests", () => {
             expect(options.duration).toBe(5000);
             done();
         };
-        component.nameInput.element.setValue(legalForm.name);
-        component.surnameInput.element.setValue(legalForm.surname);
-        component.lastNameInput.element.setValue(legalForm.lastName);
-        component.emailInput.element.setValue(legalForm.email);
-        component.passwordInput.element.setValue(legalForm.password);
-        component.repeatPasswordInput.element.setValue(legalForm.repeatPassword);
+        component.create.controls.name.setValue(legalForm.name);
+        component.create.controls.surname.setValue(legalForm.surname);
+        component.create.controls.lastName.setValue(legalForm.lastName);
+        component.create.controls.email.setValue(legalForm.email);
+        component.create.controls.password.setValue(legalForm.password);
+        component.create.controls.repeatPassword.setValue(legalForm.repeatPassword);
         component.submitForm({ preventDefault: () => { } } as any, legalForm);
     });
     it("submitForm should call dissmiss on snackbar if form is valid", (done) => {
@@ -166,12 +87,12 @@ describe("CreateUserComponent tests", () => {
         bar.fromDismiss = () => { expect(true).toBeTruthy(); done(); };
         router.fromNavigate = () => {};
         bar.fromOpen = (message, action, options) => {};
-        component.nameInput.element.setValue(legalForm.name);
-        component.surnameInput.element.setValue(legalForm.surname);
-        component.lastNameInput.element.setValue(legalForm.lastName);
-        component.emailInput.element.setValue(legalForm.email);
-        component.passwordInput.element.setValue(legalForm.password);
-        component.repeatPasswordInput.element.setValue(legalForm.repeatPassword);
+        component.create.controls.name.setValue(legalForm.name);
+        component.create.controls.surname.setValue(legalForm.surname);
+        component.create.controls.lastName.setValue(legalForm.lastName);
+        component.create.controls.email.setValue(legalForm.email);
+        component.create.controls.password.setValue(legalForm.password);
+        component.create.controls.repeatPassword.setValue(legalForm.repeatPassword);
         component.submitForm({ preventDefault: () => { } } as any, legalForm);
     });
     it("submitForm should navigate to home if form is valid", (done) => {
@@ -181,12 +102,12 @@ describe("CreateUserComponent tests", () => {
         bar.fromDismiss = () => {};
         router.fromNavigate = (route) => { expect(route).toEqual(["user", "login"]); done(); };
         bar.fromOpen = (message, action, options) => {};
-        component.nameInput.element.setValue(legalForm.name);
-        component.surnameInput.element.setValue(legalForm.surname);
-        component.lastNameInput.element.setValue(legalForm.lastName);
-        component.emailInput.element.setValue(legalForm.email);
-        component.passwordInput.element.setValue(legalForm.password);
-        component.repeatPasswordInput.element.setValue(legalForm.repeatPassword);
+        component.create.controls.name.setValue(legalForm.name);
+        component.create.controls.surname.setValue(legalForm.surname);
+        component.create.controls.lastName.setValue(legalForm.lastName);
+        component.create.controls.email.setValue(legalForm.email);
+        component.create.controls.password.setValue(legalForm.password);
+        component.create.controls.repeatPassword.setValue(legalForm.repeatPassword);
         component.submitForm({ preventDefault: () => { } } as any, legalForm);
     });
     it("submitForm should open snackbar with message 'Ошибка: Неправельный формат емейла' action 'Ok' and duration 5000 if create throws error and 'Email is incorrect' error", (done) => {
@@ -201,12 +122,12 @@ describe("CreateUserComponent tests", () => {
             expect(options.duration).toBe(5000);
             done();
         };
-        component.nameInput.element.setValue(legalForm.name);
-        component.surnameInput.element.setValue(legalForm.surname);
-        component.lastNameInput.element.setValue(legalForm.lastName);
-        component.emailInput.element.setValue(legalForm.email);
-        component.passwordInput.element.setValue(legalForm.password);
-        component.repeatPasswordInput.element.setValue(legalForm.repeatPassword);
+        component.create.controls.name.setValue(legalForm.name);
+        component.create.controls.surname.setValue(legalForm.surname);
+        component.create.controls.lastName.setValue(legalForm.lastName);
+        component.create.controls.email.setValue(legalForm.email);
+        component.create.controls.password.setValue(legalForm.password);
+        component.create.controls.repeatPassword.setValue(legalForm.repeatPassword);
         component.submitForm({ preventDefault: () => { } } as any, legalForm);
     });
     it("submitForm should reset create if create throws error", (done) => {
@@ -216,12 +137,12 @@ describe("CreateUserComponent tests", () => {
         bar.fromDismiss = () => { expect(true).toBeTruthy(); done(); };
         router.fromNavigate = () => {};
         bar.fromOpen = (message, action, options) => {};
-        component.nameInput.element.setValue(legalForm.name);
-        component.surnameInput.element.setValue(legalForm.surname);
-        component.lastNameInput.element.setValue(legalForm.lastName);
-        component.emailInput.element.setValue(legalForm.email);
-        component.passwordInput.element.setValue(legalForm.password);
-        component.repeatPasswordInput.element.setValue(legalForm.repeatPassword);
+        component.create.controls.name.setValue(legalForm.name);
+        component.create.controls.surname.setValue(legalForm.surname);
+        component.create.controls.lastName.setValue(legalForm.lastName);
+        component.create.controls.email.setValue(legalForm.email);
+        component.create.controls.password.setValue(legalForm.password);
+        component.create.controls.repeatPassword.setValue(legalForm.repeatPassword);
         component.submitForm({ preventDefault: () => { } } as any, legalForm);
     });
     it("resetForm should call reset on create form", () => {

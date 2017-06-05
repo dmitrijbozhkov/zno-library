@@ -1,18 +1,10 @@
 // Input
 import { FormBuilder } from "@angular/forms";
-import { ErrorInput, IErrorMessages } from "./inputBuilder";
 import { Observable } from "rxjs";
 import { Headers } from "@angular/http";
 import { BACKEND_ERROR_MAPPING, BACKEND_AUTH_FIELDS, DATABASE_ERRORS } from "./errorMapping";
 import { Response } from "@angular/http";
 import { sameFields } from "./sameValidator";
-// Exports
-export { ErrorInput, IErrorMessages } from "./inputBuilder";
-
-/**
- * Factory that creates ErrorInput
- */
-export type buildInput = (init: string, validators: any[], errorMessages?: IErrorMessages) => ErrorInput;
 
 /**
  * Response with error
@@ -61,16 +53,6 @@ export class Utils {
      */
     public translateDatabaseError(error: any) {
         return DATABASE_ERRORS[error.name];
-    }
-
-    /**
-     * Factory for creationg input
-     * @param builder Form builder for input creation
-     */
-    public inputFactory(builder: FormBuilder): buildInput {
-        return (init: string, validators: any[], errorMessages?: IErrorMessages) => {
-            return new ErrorInput(builder, init, validators, errorMessages);
-        };
     }
 
     /**

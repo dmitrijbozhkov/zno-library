@@ -14,7 +14,7 @@ import { MdProgressBar } from "@angular/material";
     </div>
     `,
 })
-export class LoadingComponnt {
+export class LoadingComponent {
     public show: boolean;
     public progress: number;
     constructor(private loading: LoadingService) {

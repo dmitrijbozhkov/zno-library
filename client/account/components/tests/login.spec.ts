@@ -1,7 +1,7 @@
 import { LoginComponent, errorMessages } from "../login.component";
 import { TestBed, async, getTestBed, ComponentFixture } from "@angular/core/testing";
 import { MdSnackBar } from "@angular/material";
-import { Utils, ErrorInput, IErrorMessages, buildInput } from "../../../main/utils/utils";
+import { Utils } from "../../../main/utils/utils";
 import { ReactiveFormsModule } from "@angular/forms";
 import { AccountService } from "../../services/account.service";
 import { Router } from "@angular/router";
@@ -46,30 +46,6 @@ describe("LoginComponent tests", () => {
         bar = getTestBed().get(MdSnackBar);
         router = getTestBed().get(Router);
     });
-    it("emailInput should have errorMessage equal to 'Неправильный email' if value is not emil", () => {
-        let component = fixture.componentInstance;
-        component.ngOnInit();
-        component.emailInput.element.setValue("kek");
-        expect(component.emailInput.errorMessage).toBe(errorMessages.email);
-    });
-    it("emailInput should have errorMessage equal to 'Поле обязательно для заполнения' if field not filled", () => {
-        let component = fixture.componentInstance;
-        component.ngOnInit();
-        component.emailInput.element.markAsTouched();
-        expect(component.emailInput.errorMessage).toBe(errorMessages.required);
-    });
-    it("passwordInput should have errorMessage equal to 'Поле обязательно для заполнения' if field not filled", () => {
-        let component = fixture.componentInstance;
-        component.ngOnInit();
-        component.passwordInput.element.markAsTouched();
-        expect(component.passwordInput.errorMessage).toBe(errorMessages.required);
-    });
-    it("passwordInput should have errorMessage equal to 'Пароль должен быть не менее 6 символов' if less than 6 elements", () => {
-        let component = fixture.componentInstance;
-        component.ngOnInit();
-        component.passwordInput.element.setValue("pass");
-        expect(component.passwordInput.errorMessage).toBe(errorMessages.minlength);
-    });
     it("submitForm should call preventDefault on submit event", (done) => {
         let component = fixture.componentInstance;
         account.fromLogin = () => { };
@@ -88,8 +64,8 @@ describe("LoginComponent tests", () => {
             expect(options.duration).toBe(5000);
             done();
         };
-        component.emailInput.element.setValue("kek@mail.ru");
-        component.passwordInput.element.setValue("pass1234");
+        component.login.controls.email.setValue("kek@mail.ru");
+        component.login.controls.password.setValue("pass1234");
         component.submitForm({ preventDefault: () => { } } as any, { email: "kek", password: "lel", remember: false });
     });
     it("submitForm should call dissmiss on snackbar if form is valid", (done) => {
@@ -99,8 +75,8 @@ describe("LoginComponent tests", () => {
         bar.fromDismiss = () => { expect(true).toBeTruthy(); done(); };
         router.fromNavigate = () => {};
         bar.fromOpen = (message, action, options) => {};
-        component.emailInput.element.setValue("kek@mail.ru");
-        component.passwordInput.element.setValue("pass1234");
+        component.login.controls.email.setValue("kek@mail.ru");
+        component.login.controls.password.setValue("pass1234");
         component.submitForm({ preventDefault: () => { } } as any, { email: "kek", password: "lel", remember: false });
     });
     it("submitForm should navigate to home if form is valid", (done) => {
@@ -110,8 +86,8 @@ describe("LoginComponent tests", () => {
         bar.fromDismiss = () => {};
         router.fromNavigate = (route) => { expect(route).toEqual([""]); done(); };
         bar.fromOpen = (message, action, options) => {};
-        component.emailInput.element.setValue("kek@mail.ru");
-        component.passwordInput.element.setValue("pass1234");
+        component.login.controls.email.setValue("kek@mail.ru");
+        component.login.controls.password.setValue("pass1234");
         component.submitForm({ preventDefault: () => { } } as any, { email: "kek", password: "lel", remember: false });
     });
     it("submitForm should open snackbar with message 'Ошибка: Неправельный формат емейла' action 'Ok' and duration 5000 if logIn throws error and 'Email is incorrect' error", (done) => {
@@ -126,8 +102,8 @@ describe("LoginComponent tests", () => {
             expect(options.duration).toBe(5000);
             done();
         };
-        component.emailInput.element.setValue("kek@mail.ru");
-        component.passwordInput.element.setValue("pass1234");
+        component.login.controls.email.setValue("kek@mail.ru");
+        component.login.controls.password.setValue("pass1234");
         component.submitForm({ preventDefault: () => { } } as any, { email: "kek", password: "lel", remember: false });
     });
     it("submitForm should throw error if logIn throws error has error property", () => {
@@ -137,8 +113,8 @@ describe("LoginComponent tests", () => {
         bar.fromDismiss = () => {};
         router.fromNavigate = () => {};
         bar.fromOpen = (message, action, options) => {};
-        component.emailInput.element.setValue("kek@mail.ru");
-        component.passwordInput.element.setValue("pass1234");
+        component.login.controls.email.setValue("kek@mail.ru");
+        component.login.controls.password.setValue("pass1234");
         expect(() => {
             component.submitForm({ preventDefault: () => { } } as any, { email: "kek", password: "lel", remember: false });
         }).toThrowError();
@@ -150,8 +126,8 @@ describe("LoginComponent tests", () => {
         bar.fromDismiss = () => { expect(true).toBeTruthy(); done(); };
         router.fromNavigate = () => {};
         bar.fromOpen = (message, action, options) => {};
-        component.emailInput.element.setValue("kek@mail.ru");
-        component.passwordInput.element.setValue("pass1234");
+        component.login.controls.email.setValue("kek@mail.ru");
+        component.login.controls.password.setValue("pass1234");
         component.submitForm({ preventDefault: () => { } } as any, { email: "kek", password: "lel", remember: false });
     });
     it("resetForm should call reset on login form", () => {

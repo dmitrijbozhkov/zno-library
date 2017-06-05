@@ -12,7 +12,9 @@ import {
     MdProgressBarModule,
     MdTabsModule,
     MdCardModule,
-    MdMenuModule
+    MdMenuModule,
+    MdDialogModule,
+    MdGridListModule
 } from "@angular/material";
 import { MdIconRegistry } from "@angular/material";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -33,7 +35,9 @@ import { BrowserModule } from "@angular/platform-browser";
         MdProgressBarModule,
         MdTabsModule,
         MdCardModule,
-        MdMenuModule
+        MdMenuModule,
+        MdDialogModule,
+        MdGridListModule
     ],
     exports: [
         MdToolbarModule,
@@ -49,7 +53,9 @@ import { BrowserModule } from "@angular/platform-browser";
         MdProgressBarModule,
         MdTabsModule,
         MdCardModule,
-        MdMenuModule
+        MdMenuModule,
+        MdDialogModule,
+        MdGridListModule
     ],
     providers: [ MdIconRegistry ]
 })

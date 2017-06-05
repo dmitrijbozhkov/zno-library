@@ -1,6 +1,6 @@
 /// <reference path="../../../../node_modules/@types/jasmine/index.d.ts" />
 
-import { Utils, ErrorInput } from "../../../main/utils/utils";
+import { Utils } from "../../../main/utils/utils";
 import { FormBuilder, AbstractControl } from "@angular/forms";
 
 describe("Utils tests", () => {
@@ -15,10 +15,6 @@ describe("Utils tests", () => {
             expect(actual).toBe(expected);
             done();
         });
-    });
-    it("inputFactory should return constructor that creates ErrorInput", () => {
-        let input = utils.inputFactory(new FormBuilder())("", []);
-        expect(input instanceof ErrorInput).toBeTruthy();
     });
     it("translateErrorResponse should take errorResponse with error 'Password is incorrect' and return 'Неправельный формат пароля'", () => {
         let error = { error: "Password is incorrect" };
@@ -43,16 +39,5 @@ describe("Utils tests", () => {
         let control = { value: 2 };
         let actual = utils.Validators.sameFields(eqTo as any)(control as any);
         expect(actual).toEqual({ sameFields: { control: control.value, sameTo: eqTo.value } });
-    });
-    it("inputFactory should return ErrorInput where refreshErr should check if element is invalid and pass first error to errorMessage", () => {
-        let expected = "message";
-        let input = utils.inputFactory(new FormBuilder())("", [ () => { return { message: "val" }; } ]);
-        input.element.patchValue(5);
-        expect(input.errorMessage).toBe(expected);
-    });
-    it("inputFactory should return ErrorInput where refreshErr should check if element is invalid and set isErr to true", () => {
-        let input = utils.inputFactory(new FormBuilder())("", [ () => { return { message: "val" }; } ]);
-        input.element.patchValue(5);
-        expect(input.isErr).toBeTruthy();
     });
 });

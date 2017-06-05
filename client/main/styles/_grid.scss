@@ -39,3 +39,7 @@ $tag-height: (48px * 4) + 16;
     max-height: $tag-height !important;
     overflow: scroll;
 }
+
+reactive-input {
+    width: 100%;
+}

@@ -14,6 +14,7 @@ export { TeacherGuard } from "./services/teacherGuard.service";
 import { LoginComponent } from "./components/login.component";
 import { CreateUserComponent } from "./components/create.component";
 import { UIModule } from "../main/UI.module";
+import { InputsModule } from "../main/inputs.module";
 
 let userRoutes: Routes = [
     { path: "user/login", component: LoginComponent },
@@ -21,7 +22,7 @@ let userRoutes: Routes = [
 ];
 
 @NgModule({
-    imports: [ ReactiveFormsModule, UIModule, FormsModule, RouterModule.forRoot(userRoutes) ],
+    imports: [ ReactiveFormsModule, UIModule, FormsModule, RouterModule.forRoot(userRoutes), InputsModule ],
     declarations: [ LoginComponent, CreateUserComponent ],
 })
 export class AccountModule {}

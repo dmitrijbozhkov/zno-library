@@ -18,8 +18,9 @@ import { AppHttpModule } from "../http/http.module";
 import { AccountDatabaseService, DatabaseService } from "../database/database.module";
 import { UIModule } from "./UI.module";
 import { LoadingService } from "./load/loading.service";
-import { LoadingComponnt } from "./load/loading.component";
+import { LoadingComponent } from "./load/loading.component";
 import { PanelModule } from "../panel/panel.module";
+import { InputsModule } from "./inputs.module";
 // Utils
 import { utilsProvider } from "./utils/utils";
 
@@ -44,7 +45,7 @@ export const windowProvider = { provide: Window, useValue: window };
   ],
   exports: [ HttpModule ],
   providers: [ AccountService, LoginGuard, AdminGuard, TeacherGuard, windowProvider, utilsProvider, LoadingService, AccountDatabaseService, DatabaseService ],
-  declarations: [ MainComponent, NotFound, HomeComponent, LogNavComponent, LoadingComponnt ],
+  declarations: [ MainComponent, NotFound, HomeComponent, LogNavComponent, LoadingComponent ],
   bootstrap: [ MainComponent ]
 })
 export class InitModule { }

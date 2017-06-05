@@ -16,6 +16,9 @@ import { RemoveCourseComponent } from "./components/course/remove-course.compone
 import { HistoryStudentComponent } from "./components/history/history-student.component";
 import { AdminRolesComponent } from "./components/admin/admin-roles.component";
 import { AddCourseService } from "./services/add-course.service";
+import { AddCourseTagComponent } from "./components/course/add-course-tag.component";
+import { CreateTagDialog } from "./components/tag/create-tag.component";
+import { InputsModule } from "../main/inputs.module";
 
 let panelRoutes: Routes = [
     { path: "user", component: PanelNavComponent, canActivate: [ LoginGuard ], children: [
@@ -32,18 +35,21 @@ let panelRoutes: Routes = [
 ];
 
 @NgModule({
-    imports: [ ReactiveFormsModule, UIModule, FormsModule, RouterModule.forRoot(panelRoutes) ],
+    imports: [ ReactiveFormsModule, UIModule, FormsModule, RouterModule.forRoot(panelRoutes), InputsModule ],
     declarations: [
         HistoryComponent,
         SettingsComponent,
         PanelNavComponent,
         TeacherPanelComponent,
         AdminPanelComponent,
+        AddCourseTagComponent,
         AddCourseComponent,
         RemoveCourseComponent,
         HistoryStudentComponent,
-        AdminRolesComponent
+        AdminRolesComponent,
+        CreateTagDialog
     ],
-    providers: [ HistoryService, AddCourseService ]
+    providers: [ HistoryService, AddCourseService ],
+    entryComponents: [ CreateTagDialog ]
 })
 export class PanelModule {}

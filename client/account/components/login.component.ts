@@ -1,10 +1,11 @@
-import { Component, OnInit } from "@angular/core";
-import { FormGroup, FormControl, Validators, FormBuilder } from "@angular/forms";
+import { Component, OnInit, ElementRef, Output } from "@angular/core";
+import { FormGroup, FormControl, Validators, FormBuilder, AbstractControl } from "@angular/forms";
 import { MdSnackBar } from "@angular/material";
-import { Utils, ErrorInput, IErrorMessages, buildInput } from "../../main/utils/utils";
+import { Utils } from "../../main/utils/utils";
 import { AccountService } from "../services/account.service";
 import { ILoginCredentials } from "../services/account.service";
 import { Router } from "@angular/router";
+import { IErrorMessages } from "../../main/inputs/reactive-input.component";
 
 export let errorMessages: IErrorMessages = {
     required: "Поле обязательно для заполнения",
@@ -19,16 +20,12 @@ export let errorMessages: IErrorMessages = {
         <md-list class="content-window">
             <md-list-item class="form-item"><h1>Вход в аккаунт</h1></md-list-item>
             <md-list-item class="form-input form-item">
-                <md-input-container>
-                    <input mdInput required placeholder="Email" type="email" formControlName="email" />
-                    <md-error *ngIf="emailInput.isErr">{{ emailInput.errorMessage }}</md-error>
-                </md-input-container>
+                <reactive-input [group]="login" [errorList]="errorMessages" [controlName]="'email'" [type]="'email'" [placeholder]="'Email'" required="true">
+                </reactive-input>
             </md-list-item>
             <md-list-item class="form-input form-item">
-                <md-input-container>
-                    <input mdInput required placeholder="Пароль" type="password" formControlName="password" />
-                    <md-error *ngIf="passwordInput.isErr">{{ passwordInput.errorMessage }}</md-error>
-                </md-input-container>
+                <reactive-input [group]="login" [errorList]="errorMessages" [controlName]="'password'" [type]="'password'" [placeholder]="'Пароль'" required="true">
+                </reactive-input>
             </md-list-item>
             <md-list-item class="form-item">
                 <md-checkbox formControlName="remember">Запомнить меня</md-checkbox>
@@ -44,23 +41,20 @@ export let errorMessages: IErrorMessages = {
 })
 export class LoginComponent implements OnInit {
     // services
-    private inputFactory: buildInput;
     private fb: FormBuilder;
     private account: AccountService;
     private snackbar: MdSnackBar;
     private router: Router;
     private utils: Utils;
     // Inputs
-    public login: FormGroup;
-    public emailInput: ErrorInput;
-    public passwordInput: ErrorInput;
-    constructor(fb: FormBuilder, account: AccountService, utils: Utils, snackbar: MdSnackBar, router: Router) {
-        this.inputFactory = utils.inputFactory(fb);
+    @Output() public login: FormGroup;
+    @Output() public errorMessages: IErrorMessages;
+    constructor(fb: FormBuilder, account: AccountService, snackbar: MdSnackBar, router: Router) {
+        this.errorMessages = errorMessages;
         this.fb = fb;
         this.account = account;
         this.snackbar = snackbar;
         this.router = router;
-        this.utils = utils;
     }
     public ngOnInit() {
         this.initForm();
@@ -70,11 +64,9 @@ export class LoginComponent implements OnInit {
      * Initializes login form
      */
     public initForm() {
-        this.emailInput = this.inputFactory("", [ Validators.required, Validators.email ], errorMessages);
-        this.passwordInput = this.inputFactory( "", [ Validators.required, Validators.minLength(6) ], errorMessages);
         this.login = this.fb.group({
-            email: this.emailInput.element,
-            password: this.passwordInput.element,
+            email: this.fb.control("", [ Validators.required, Validators.email ]),
+            password: this.fb.control("", [ Validators.required, Validators.minLength(6) ]),
             remember: [ false ]
         });
     }

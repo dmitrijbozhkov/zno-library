@@ -1,16 +1,16 @@
 import { TestBed, async, getTestBed, ComponentFixture } from "@angular/core/testing";
-import { AddCourseHttpService } from "../add-course-http.service";
+import { CourseHttpService } from "../course-http.service";
 import { Http, BaseRequestOptions, XHRBackend, ResponseOptions, Response, Headers } from "@angular/http";
 import { MockBackend, MockConnection } from "@angular/http/testing";
 import { Utils } from "../../main/utils/utils";
 import { Observable } from "rxjs";
 
 describe("AddCourseHttpService tests", () => {
-    let service: AddCourseHttpService;
+    let service: CourseHttpService;
     let backend: MockBackend;
     beforeEach(async(() => {
         TestBed.configureTestingModule({ providers: [
-            AddCourseHttpService,
+            CourseHttpService,
             Utils,
             BaseRequestOptions,
             MockBackend,
@@ -23,7 +23,7 @@ describe("AddCourseHttpService tests", () => {
             }]
         });
         let bed = getTestBed();
-        service = bed.get(AddCourseHttpService);
+        service = bed.get(CourseHttpService);
         backend = bed.get(MockBackend);
     }));
     it("should be created");
