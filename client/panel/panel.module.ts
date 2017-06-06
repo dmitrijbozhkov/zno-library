@@ -19,6 +19,7 @@ import { AddCourseService } from "./services/add-course.service";
 import { AddCourseTagComponent } from "./components/course/add-course-tag.component";
 import { CreateTagDialog } from "./components/tag/create-tag.component";
 import { InputsModule } from "../main/inputs.module";
+import { CreateChapterComponent } from "./components/chapter/create-chapter.component";
 
 let panelRoutes: Routes = [
     { path: "user", component: PanelNavComponent, canActivate: [ LoginGuard ], children: [
@@ -47,7 +48,8 @@ let panelRoutes: Routes = [
         RemoveCourseComponent,
         HistoryStudentComponent,
         AdminRolesComponent,
-        CreateTagDialog
+        CreateTagDialog,
+        CreateChapterComponent
     ],
     providers: [ HistoryService, AddCourseService ],
     entryComponents: [ CreateTagDialog ]

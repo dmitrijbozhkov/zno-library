@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">91.43% </span>
+        <span class="strong">89.66% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>32/35</span>
+        <span class='fraction'>26/29</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
@@ -30,14 +30,14 @@
         <span class='fraction'>4/4</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">75% </span>
+        <span class="strong">70% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>9/12</span>
+        <span class='fraction'>7/10</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">93.55% </span>
+        <span class="strong">92.31% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>29/31</span>
+        <span class='fraction'>24/26</span>
       </div>
     </div>
   </div>
@@ -128,39 +128,13 @@
 83
 84
 85
-86
-87
-88
-89
-90
-91
-92
-93
-94
-95
-96
-97
-98
-99
-100
-101
-102
-103
-104</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+86</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -175,7 +149,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">73×</span>
+<span class="cline-any cline-yes">51×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -216,16 +190,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">41×</span>
-<span class="cline-any cline-yes">159×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">5×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -251,19 +215,11 @@
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// Input
 import { FormBuilder } from "@angular/forms";
-import { ErrorInput, IErrorMessages } from "./inputBuilder";
 import { Observable } from "rxjs";
 import { Headers } from "@angular/http";
 import { BACKEND_ERROR_MAPPING, BACKEND_AUTH_FIELDS, DATABASE_ERRORS } from "./errorMapping";
 import { Response } from "@angular/http";
 import { sameFields } from "./sameValidator";
-// Exports
-export { ErrorInput, IErrorMessages } from "./inputBuilder";
-&nbsp;
-/**
- * Factory that creates ErrorInput
- */
-export type buildInput = (init: string, validators: any[], errorMessages?: IErrorMessages) =&gt; ErrorInput;
 &nbsp;
 /**
  * Response with error
@@ -315,16 +271,6 @@ export class Utils {
     }
 &nbsp;
     /**
-     * Factory for creationg input
-     * @param builder Form builder for input creation
-     */
-    public inputFactory(builder: FormBuilder): buildInput {
-        return (init: string, validators: any[], errorMessages?: IErrorMessages) =&gt; {
-            return new ErrorInput(builder, init, validators, errorMessages);
-        };
-    }
-&nbsp;
-    /**
      * Handles resource promise responses and errors
      * @param response Promise with response
      */
@@ -358,7 +304,7 @@ export const utilsProvider = { provide: Utils, useClass: Utils };
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Jun 04 2017 13:29:01 GMT+0300 (FLE Summer Time)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Tue Jun 06 2017 12:31:46 GMT+0300 (FLE Summer Time)
 </div>
 </div>
 <script src="../../prettify.js"></script>

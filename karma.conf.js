@@ -17,6 +17,9 @@ module.exports = function (config) {
     webpackMiddleware: {
       stats: 'errors-only'
     },
+    client: {
+      captureConsole: false
+    },
     webpackServer: {
       noInfo: true
     },

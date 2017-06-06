@@ -6,20 +6,35 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { UIModule } from "../../../../main/UI.module";
 import { Observable } from "rxjs";
 import { MdDialog } from "@angular/material";
+import { CreateTagDialog, CreateTagOptions } from "../../tag/create-tag.component";
 
 class AddMock {
     public fromGet;
     public courseTags = [];
+    public fromAdd;
     public getTags() {
         return this.fromGet();
     }
+    public addTag(name) {
+        return this.fromAdd(name);
+    }
 }
 
-class DialogMock {}
+class DialogMock {
+    public fromOpen;
+    public fromAfterClosed;
+    public open(component, options) {
+        return this.fromOpen(component, options);
+    }
+    public afterClosed() {
+        return this.fromAfterClosed();
+    }
+}
 
 describe("AddCourseTagComponent tests", () => {
     let fixture: ComponentFixture<AddCourseTagComponent>;
     let add: AddMock;
+    let dialog: DialogMock;
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [ ReactiveFormsModule, UIModule ],
@@ -28,10 +43,11 @@ describe("AddCourseTagComponent tests", () => {
                 { provide: AddCourseService, useClass: AddMock },
                 { provide: MdDialog, useClass: DialogMock }
             ],
-            declarations: [ AddCourseTagComponent ]
+            declarations: [ AddCourseTagComponent, CreateTagDialog ]
         });
         fixture = TestBed.createComponent(AddCourseTagComponent);
         add = getTestBed().get(AddCourseService);
+        dialog = getTestBed().get(MdDialog);
     });
     it("openTagMenu should call preventDefault on event", (done) => {
         let component = fixture.componentInstance;
@@ -95,5 +111,40 @@ describe("AddCourseTagComponent tests", () => {
         component.selectTags = [ records[1], records[2] ];
         component.removeTag(records[3]);
         expect(component.selectTags).toEqual([ records[1], records[2], records[3] ]);
+    });
+    it("newTag should open dialog with CreateTagDialog component and pass data with ''", (done) => {
+        let component = fixture.componentInstance;
+        dialog.fromOpen = (comp, options) => {
+            expect(comp).toBeDefined();
+            expect(options).toEqual({ data: "" });
+            done();
+            return dialog;
+        };
+        dialog.fromAfterClosed = () => { return Observable.never(); };
+        component.newTag({} as any);
+    });
+    it("newTag should subscribe to dialog afterClosed", (done) => {
+        let component = fixture.componentInstance;
+        dialog.fromOpen = () => {
+            return dialog;
+        };
+        dialog.fromAfterClosed = () => { return { subscribe: (func) => {
+            expect(func).toBeDefined();
+            done();
+        } }; };
+        component.newTag({} as any);
+    });
+    it("newTag should call addTAg on manager if action was 0 and pass name of the tag", (done) => {
+        let component = fixture.componentInstance;
+        dialog.fromOpen = () => {
+            return dialog;
+        };
+        let expected = "Super tag";
+        dialog.fromAfterClosed = () => { return Observable.of({ action: CreateTagOptions[0], name: expected }); };
+        add.fromAdd = (name) => {
+            expect(name).toBe(expected);
+            done();
+        };
+        component.newTag({} as any);
     });
 });

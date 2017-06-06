@@ -7,6 +7,7 @@ import { AccountService } from "../../services/account.service";
 import { Router } from "@angular/router";
 import { UIModule } from "../../../main/UI.module";
 import { Observable } from "rxjs";
+import { InputsModule } from "../../../main/inputs.module";
 
 class AccountServiceMock {
     public fromLogin;
@@ -32,7 +33,7 @@ describe("LoginComponent tests", () => {
     let router: RouterMock;
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [ ReactiveFormsModule, UIModule ],
+            imports: [ ReactiveFormsModule, UIModule, InputsModule ],
             providers: [
                 Utils,
                 { provide: AccountService, useClass: AccountServiceMock },

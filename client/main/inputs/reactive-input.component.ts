@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from "@angular/core";
+import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from "@angular/core";
 import { FormGroup, AbstractControl } from "@angular/forms";
 import { Subscription } from "rxjs";
 
@@ -12,8 +12,8 @@ export interface IErrorMessages {
 @Component({
     selector: "reactive-input",
     template: `
-    <md-input-container [formGroup]="group">
-        <input mdInput required="{{required}}" placeholder="{{placeholder}}" type="{{type}}" [formControl]="control" />
+    <md-input-container [formGroup]="group" (click)="refreshErr()">
+        <input mdInput (blur)="onRefresh($event)" required="{{required}}" placeholder="{{placeholder}}" type="{{type}}" [formControl]="control" />
         <md-error *ngIf="control.invalid">{{ errorMessage }}</md-error>
         <md-hint *ngFor="let hint of hintList">{{ hint }}</md-hint>
     </md-input-container>
@@ -28,9 +28,19 @@ export class ReactiveInputComponent implements OnInit, OnDestroy {
     @Input() public placeholder: string;
     @Input() public required: boolean;
 
-    private changes: Subscription;
-    private control: AbstractControl;
-    private errorMessage: string;
+    public changes: Subscription;
+    public control: AbstractControl;
+    public errorMessage: string;
+
+    @Output() refresh: EventEmitter<UIEvent>;
+
+    constructor() {
+        this.refresh = new EventEmitter();
+    }
+
+    public onRefresh(event: UIEvent) {
+        this.refresh.emit(event);
+    }
 
     /**
      * Initializes input handling

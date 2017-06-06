@@ -24,14 +24,36 @@ export interface IIdError {
             <md-card-title><h2>Добавить Курс</h2></md-card-title>
         </md-card-header>
         <md-card-content>
-            <form [formGroup]="addCourse" (ngSubmit)="submitForm($event, login.value)">
+            <form [formGroup]="addCourse" (ngSubmit)="submitForm($event, addCourse.value)">
                 <md-list>
                     <md-list-item class="form-input form-item">
-                        <reactive-input [group]="addCourse" [errorList]="errList" [controlName]="'name'" [type]="'text'" [placeholder]="'Название курса'" required="true">
+                        <reactive-input (refresh)="checkCourseName()" [hintList]="nameIsValid" [group]="addCourse" [errorList]="errList" [controlName]="'name'" [type]="'text'" [placeholder]="'Название курса'" required="true">
                         </reactive-input>
                     </md-list-item>
                     <add-tag></add-tag>
+                    <md-divider></md-divider>
+                    <file-input [label]="'Картинка курса:'" formControlName="banner"></file-input>
+                    <md-divider></md-divider>
+                    <file-input [label]="'Текст описания:'" formControlName="description"></file-input>
+                    <md-divider></md-divider>
+                    <file-input [label]="'Текст вводной части'" formControlName="intro"></file-input>
+                    <md-divider></md-divider>
+                    <md-list-item>
+                        <h3>Главы:</h3>
+                    </md-list-item>
+                    <md-list>
+                        <create-chapter></create-chapter>
+                        <md-grid-list cols="2" rowHeight="48px">
+                            <md-grid-tile>
+                                <button md-raised-button type="button"><md-icon>note_add</md-icon>Добавить главу</button>
+                            </md-grid-tile>
+                            <md-grid-tile>
+                                <button md-raised-button type="button"><md-icon>date_range</md-icon>Добавить тест</button>
+                            </md-grid-tile>
+                        </md-grid-list>
+                    </md-list>
                 </md-list>
+                <button md-raised-button class="send-login" type="submit">Отправить</button>
             </form>
         </md-card-content>
     </md-card>
@@ -47,6 +69,7 @@ export class AddCourseComponent implements OnInit {
     // form
     @Output() public addCourse: FormGroup;
     @Output() public errList: IErrorMessages;
+    @Output() public nameIsValid: string[];
     constructor(utils: Utils, manager: AddCourseService, fb: FormBuilder, snackbar: MdSnackBar, dialog: MdDialog) {
         this.utils = utils;
         this.manager = manager;
@@ -54,6 +77,7 @@ export class AddCourseComponent implements OnInit {
         this.snackbar = snackbar;
         this.dialog = dialog;
         this.errList = errList;
+        this.nameIsValid = [];
     }
 
     /**
@@ -66,10 +90,42 @@ export class AddCourseComponent implements OnInit {
     /**
      * Initializes form
      */
-    public initForm() {
+    private initForm() {
         this.addCourse = this.fb.group({
-            name: this.fb.control("", [ Validators.required ])
+            name: this.fb.control("", [ Validators.required ]),
+            banner: this.fb.control(""),
+            description: this.fb.control(""),
+            intro: this.fb.control("")
         });
+    }
+
+    /**
+     * Handles course adding response
+     * @param control Course name control
+     */
+    private addCourseHandler(control: AbstractControl) {
+        let message = "Название курса свободно";
+        control.setErrors({});
+        control.setValue(control.value);
+        let index = this.nameIsValid.indexOf(message);
+        if (index === -1) {
+            this.nameIsValid.push(message);
+        }
+    }
+
+    /**
+     * Handles course adding error
+     * @param control Course name control
+     */
+    private addCourseError(control: AbstractControl) {
+        let message = "Название курса свободно";
+        control.setErrors({
+            nameError: true
+        });
+        let index = this.nameIsValid.indexOf(message);
+        if (index === -1) {
+            this.nameIsValid.pop();
+        }
     }
 
     /**
@@ -80,12 +136,9 @@ export class AddCourseComponent implements OnInit {
         if (nameControl.value) {
             this.manager.addCourseName(nameControl.value)
             .subscribe((id) => {
-                nameControl.setErrors({});
-                nameControl.setValue(nameControl.value);
+                this.addCourseHandler(nameControl);
             }, (err) => {
-                nameControl.setErrors({
-                    nameError: true
-                });
+                this.addCourseError(nameControl);
             });
         }
     }
@@ -93,7 +146,10 @@ export class AddCourseComponent implements OnInit {
     /**
      * Handles form submit
      */
-    submitForm() {}
+    submitForm(event: UIEvent, value: any) {
+        event.preventDefault();
+        console.log(event, value);
+    }
 
     /**
      * Handles form reset

@@ -54,7 +54,7 @@ export let accErrorMessages = {
                     <a routerLink="../login" routerLinkActive="active">Уже есть аккаунт?</a>
                 </div>
                 <div class="button-wrapper">
-                    <button md-raised-button class="clean-login" type="reset" (click)="resetForm($event)">Очистить</button>
+                    <button md-raised-button class="clean-login account" type="reset" (click)="resetForm($event)">Очистить</button>
                     <button md-raised-button class="send-login" type="submit">Отправить</button>
                 </div>
             </md-list-item>

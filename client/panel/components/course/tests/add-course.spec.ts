@@ -6,6 +6,7 @@ import { UIModule } from "../../../../main/UI.module";
 import { Utils } from "../../../../main/utils/utils";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { Observable } from "rxjs";
+import { InputsModule } from "../../../../main/inputs.module";
 
 class AddMock {
     public fromAddCourse;
@@ -17,7 +18,7 @@ describe("AddCourseComponent tests", () => {
     let add: AddMock;
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [ ReactiveFormsModule, UIModule ],
+            imports: [ ReactiveFormsModule, UIModule, InputsModule ],
             providers: [
                 Utils,
                 { provide: AddCourseService, useClass: AddMock }
@@ -27,5 +28,21 @@ describe("AddCourseComponent tests", () => {
         });
         fixture = TestBed.createComponent(AddCourseComponent);
         add = getTestBed().get(AddCourseService);
+    });
+    it("checkCourseName should add message 'Название курса свободно' if managers addCourseName returns response", (done) => {
+        let component = fixture.componentInstance;
+        add.fromAddCourse = () => { done(); return Observable.of("kek"); };
+        component.ngOnInit();
+        component.addCourse.controls.name.setValue("thing");
+        component.checkCourseName();
+        expect(component.nameIsValid).toEqual([ "Название курса свободно" ]);
+    });
+    it("checkCourseName should remove message if managers addCourseName returns error", (done) => {
+        let component = fixture.componentInstance;
+        add.fromAddCourse = () => { done(); return Observable.throw("kek"); };
+        component.ngOnInit();
+        component.addCourse.controls.name.setValue("thing");
+        component.checkCourseName();
+        expect(component.nameIsValid).toEqual([]);
     });
 });

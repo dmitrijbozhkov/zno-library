@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, Output } from "@angular/core";
+import { Component, OnInit, Output } from "@angular/core";
 import { FormGroup, FormControl, Validators, FormBuilder, AbstractControl } from "@angular/forms";
 import { MdSnackBar } from "@angular/material";
 import { Utils } from "../../main/utils/utils";
@@ -49,12 +49,13 @@ export class LoginComponent implements OnInit {
     // Inputs
     @Output() public login: FormGroup;
     @Output() public errorMessages: IErrorMessages;
-    constructor(fb: FormBuilder, account: AccountService, snackbar: MdSnackBar, router: Router) {
+    constructor(fb: FormBuilder, account: AccountService, snackbar: MdSnackBar, router: Router, utils: Utils) {
         this.errorMessages = errorMessages;
         this.fb = fb;
         this.account = account;
         this.snackbar = snackbar;
         this.router = router;
+        this.utils = utils;
     }
     public ngOnInit() {
         this.initForm();

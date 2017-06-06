@@ -1,7 +1,7 @@
 import { MdSnackBar, MdDialog, MdDialogRef, MD_DIALOG_DATA } from "@angular/material";
 import { Component, OnInit, Inject } from "@angular/core";
 import { ITag } from "../course/add-course-tag.component";
-import { FormBuilder, FormGroup } from "@angular/forms";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 
 export enum CreateTagOptions {
     "Submit",
@@ -25,13 +25,21 @@ export enum CreateTagOptions {
     </md-dialog-actions>
     `
 })
-export class CreateTagDialog {
+export class CreateTagDialog implements OnInit {
     private dialog: MdDialogRef<CreateTagDialog>;
+    private fb: FormBuilder;
     public addTag: FormGroup;
-    constructor(dialog: MdDialogRef<CreateTagDialog>, fb: FormBuilder, @Inject(MD_DIALOG_DATA) data: string) {
+    constructor(dialog: MdDialogRef<CreateTagDialog>, fb: FormBuilder) {
         this.dialog = dialog;
-        this.addTag = fb.group({
-            tagName: [data]
+        this.fb = fb;
+    }
+
+    /**
+     * Initializes input
+     */
+    public ngOnInit() {
+        this.addTag = this.fb.group({
+            tagName: [ "", [ ] ]
         });
     }
 
