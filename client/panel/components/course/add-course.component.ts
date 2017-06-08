@@ -42,13 +42,14 @@ export interface IIdError {
                         <h3>Главы:</h3>
                     </md-list-item>
                     <md-list>
-                        <create-chapter></create-chapter>
+                        <md-list-item *ngFor="let chapter of manager.courseChapters" >
+                        </md-list-item>
                         <md-grid-list cols="2" rowHeight="48px">
                             <md-grid-tile>
-                                <button md-raised-button type="button"><md-icon>note_add</md-icon>Добавить главу</button>
+                                <button md-raised-button routerLink="test" type="button"><md-icon>date_range</md-icon>Добавить тест</button>
                             </md-grid-tile>
                             <md-grid-tile>
-                                <button md-raised-button type="button"><md-icon>date_range</md-icon>Добавить тест</button>
+                                <button md-raised-button routerLink="chapter" type="button"><md-icon>note_add</md-icon>Добавить главу</button>
                             </md-grid-tile>
                         </md-grid-list>
                     </md-list>

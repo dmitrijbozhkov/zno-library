@@ -58,6 +58,10 @@ def find_email(email):
     """ Finds user by email """
     return user_datastore.find_user(email=email)
 
+def find_role(role):
+    """ Finds role by name """
+    return user_datastore.find_role(role)
+
 def add_user(credentials):
     """ Adds user to the database """
     if find_email(credentials["email"]) == None:
@@ -73,7 +77,7 @@ def add_user(credentials):
             name=credentials["name"],
             surname=credentials["surname"],
             lastName=credentials["lastName"]),
-        student_role = user_datastore.find_role("Student")
+        student_role = find_role("Student")
         user_datastore.add_role_to_user(user[0], student_role)
         db.session.commit()
         return (True, "OK")
@@ -91,3 +95,18 @@ def log_in_credentials(credentials):
             return (True, user.get_auth_token(), user.dictify())
         else:
             return (False, "Password or email is wrong")
+
+def user_has_role(email, role):
+    """ Finds user by email and checks if he has needed role """
+    user = find_email(email)
+    if user == None:
+        return (False, "No user found")
+    else:
+        role = find_role(role)
+        if role == None:
+            return (False, "No such role")
+        else:
+            if user.has_role(role):
+                return (True, "OK")
+            else:
+                return (False, "No proper role")

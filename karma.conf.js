@@ -17,11 +17,11 @@ module.exports = function (config) {
     webpackMiddleware: {
       stats: 'errors-only'
     },
-    client: {
-      captureConsole: false
-    },
     webpackServer: {
       noInfo: true
+    },
+    client: {
+      captureConsole: false
     },
     reporters: ["mocha", "coverage"],
     port: 9876,

@@ -5,32 +5,51 @@ from sqlalchemy import desc, func
 
 def get_tags():
     """ Returns list of all tags """
-    return [ tag.dictify() for tag in Tag.query.all() ]
+    try:
+        return (True, [ tag.dictify() for tag in Tag.query.all() ])
+    except:
+        return (False, "Error occured")
+
+def find_tag_id(id):
+    """ Finds tag by id """
+    return Tag.query.filter(Tag.id == id)
+
+def find_tag_name(name):
+    """ Finds tag by name """
+    return Tag.query.filter(Tag.name == name)
 
 def set_tag(tag_name):
     """ Adds new tag """
-    try:
-        last_id = db.session.query(func.max(Tag.id)).first()
-        id = 1
-        if not (last_id[0] == None):
-            id = last_id[0] + 1
-        addTag = Tag(id=id, name=tag_name)
-        db.session.add(addTag)
-        db.session.commit()
-    except:
-        return False
+    tag = find_tag_name(tag_name).first()
+    if tag == None:
+        try:
+            last_id = db.session.query(func.max(Tag.id)).first()
+            id = 1
+            if not (last_id[0] == None):
+                id = last_id[0] + 1
+            addTag = Tag(id=id, name=tag_name)
+            db.session.add(addTag)
+            db.session.commit()
+        except:
+            return (False, "Error occured")
+        else:
+            return (True, "OK")
     else:
-        return True
+        return (False, "Tag already exists")
 
 def remove_tag(tag_id):
     """ Deletes tag by id """
-    try:
-        Tag.query.filter(Tag.id == tag_id).delete()
-        db.session.commit()
-    except:
-        return False
+    tag = find_tag_id(tag_id)
+    if tag.first() == None:
+        return (False, "No such tag")
     else:
-        return True
+        try:
+            tag.delete()
+            db.session.commit()
+        except:
+            return (False, "Error occured")
+        else:
+            return (True, "OK")
 
 def get_courses(page_no=0, page_size=5):
     """ Returns list of most recent courses """

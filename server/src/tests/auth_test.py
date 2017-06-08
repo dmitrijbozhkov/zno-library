@@ -7,6 +7,7 @@ from auth_module.auth_routes import auth
 from json import loads
 
 app.config["TESTING"] = True
+app.config["LOGIN_DISABLED"] = True
 app.register_blueprint(auth)
 
 class AuthTestCase(unittest.TestCase):

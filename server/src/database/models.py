@@ -12,13 +12,13 @@ Base = declarative_base(metadata=MetaData(schema="public"))
 db = SQLAlchemy()     
 
 roles_users = Table("roles_users", Base.metadata,
-    Column("user_id", Integer, ForeignKey("user.id")),
-    Column("role_id", Integer, ForeignKey("role.id"))
+    Column("user_id", Integer, ForeignKey("user.id", ondelete="CASCADE")),
+    Column("role_id", Integer, ForeignKey("role.id", ondelete="CASCADE"))
 )
 
 tags_courses = Table("tags_courses", Base.metadata,
-    Column("tag_id", Integer, ForeignKey("tag.id")),
-    Column("course_id", String(32), ForeignKey("course.id"))
+    Column("tag_id", Integer, ForeignKey("tag.id", ondelete="CASCADE")),
+    Column("course_id", String(32), ForeignKey("course.id", ondelete="CASCADE"))
 )
 
 class User(Base, UserMixin):

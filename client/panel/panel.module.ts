@@ -19,7 +19,8 @@ import { AddCourseService } from "./services/add-course.service";
 import { AddCourseTagComponent } from "./components/course/add-course-tag.component";
 import { CreateTagDialog } from "./components/tag/create-tag.component";
 import { InputsModule } from "../main/inputs.module";
-import { CreateChapterComponent } from "./components/chapter/create-chapter.component";
+import { AddChapterComponent } from "./components/course/add-chapter.component";
+import { AddTestComponent } from "./components/course/add-test.component";
 
 let panelRoutes: Routes = [
     { path: "user", component: PanelNavComponent, canActivate: [ LoginGuard ], children: [
@@ -28,6 +29,8 @@ let panelRoutes: Routes = [
         { path: "settings", component: SettingsComponent },
         { path: "teacher", component: TeacherPanelComponent, canActivate: [ TeacherGuard ] },
         { path: "course/add", component: AddCourseComponent, canActivate: [ TeacherGuard ] },
+        { path: "course/add/chapter", component: AddChapterComponent, canActivate: [ TeacherGuard ] },
+        { path: "course/add/test", component: AddTestComponent, canActivate: [ TeacherGuard ] },
         { path: "course/remove", component: RemoveCourseComponent, canActivate: [ TeacherGuard ] },
         { path: "history/students", component: HistoryStudentComponent, canActivate: [ TeacherGuard ] },
         { path: "admin", component: AdminPanelComponent, canActivate: [ AdminGuard ] },
@@ -49,7 +52,8 @@ let panelRoutes: Routes = [
         HistoryStudentComponent,
         AdminRolesComponent,
         CreateTagDialog,
-        CreateChapterComponent
+        AddTestComponent,
+        AddChapterComponent
     ],
     providers: [ HistoryService, AddCourseService ],
     entryComponents: [ CreateTagDialog ]

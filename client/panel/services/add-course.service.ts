@@ -13,12 +13,14 @@ export class AddCourseService {
     private database: DatabaseService;
     private courseName: string;
     public courseTags: ITag[];
+    public courseChaters: any[];
     constructor(@Inject(CourseHttpService) http: CourseHttpService, @Inject(TagHttpService) tag: TagHttpService, @Inject(LoadingService) loading: LoadingService, @Inject(DatabaseService) database: DatabaseService) {
         this.http = http;
         this.load = loading;
         this.tag = tag;
         this.database = database;
         this.courseTags = [];
+        this.courseChaters = [];
     }
 
     /**
@@ -44,4 +46,6 @@ export class AddCourseService {
     public addTag(name: string) {
         console.log("add", name);
     }
+
+    public addChapter() {}
 }

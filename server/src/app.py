@@ -25,7 +25,7 @@ security = Security(app, user_datastore)
 
 @app.before_first_request
 def fill_roles():
-    init_db(user_datastore, db)
+    init_db(user_datastore, db, app.config["TESTING"])
 
 @app.route("/")
 def route():

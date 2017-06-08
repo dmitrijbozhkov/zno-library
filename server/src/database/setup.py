@@ -1,5 +1,5 @@
 """ Functions to initialize database """
-from .models import Role, User, Course
+from .models import Role, User, Course, Tag
 from flask_security.utils import encrypt_password
 
 def check_add_role(store, id, name):
@@ -32,6 +32,15 @@ def fill_roles(datastore, database):
     admin = add_user(datastore, 1, "bozhkov_d@mail.ru", "pass1234", "Ivan", "Ivanov", "Ivanovich", [admin_role, teacher_role, student_role])
     database.session.commit()
 
-def init_db(user_datastore, database):
+def emptydb(database):
+    Tag.query.delete()
+    User.query.delete()
+    Course.query.delete()
+    Role.query.delete()
+    database.session.commit()
+
+def init_db(user_datastore, database, isTest):
     """ Initializes database """
+    if isTest:
+        emptydb(database)
     fill_roles(user_datastore, database)
