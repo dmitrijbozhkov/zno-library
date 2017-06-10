@@ -9,7 +9,7 @@ module.exports = [
             app: "./main/init.module"
         },
         output: {
-            path: path.resolve(__dirname, "static"),
+            path: path.resolve(__dirname, "static", "client"),
             filename: "[name].js"
         },
         resolve: {
@@ -39,7 +39,7 @@ module.exports = [
             assets: "./assets"
         },
         output: {
-            path: path.resolve(__dirname, "static"),
+            path: path.resolve(__dirname, "static", "client"),
             filename: "[name].js"
         },
         resolve: {

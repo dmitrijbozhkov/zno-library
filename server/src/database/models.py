@@ -101,14 +101,13 @@ class Course(Base):
             "preface_images": [ image.dictify() for image in self.preface_images ]
         }
         return dictionary
-    id = Column(String(32), primary_key=True)
+    id = Column(String(16), primary_key=True)
     name = Column(String(200), nullable=False)
-    contents = Column(Text, nullable=False)
+    contents = Column(Text, nullable=True)
     postTime = Column(DateTime, nullable=False)
-    description = Column(Text, nullable=False)
-    preface = Column(Text, nullable=False)
+    description = Column(Text, nullable=True)
+    preface = Column(Text, nullable=True)
     icon = Column(String(200))
-    rev = Column(Integer, nullable=False)
     authorId = Column(Integer, ForeignKey("user.id"), nullable=False)
     author = relationship("User", back_populates="courses")
     preface_images = relationship("PrefaceImage", back_populates="course")

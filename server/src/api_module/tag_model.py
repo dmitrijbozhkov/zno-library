@@ -1,4 +1,4 @@
-""" Logic for api routes """
+""" Logic for tag routes """
 from app import user_datastore, db
 from database.models import Tag, Course
 from sqlalchemy import desc, func
@@ -50,8 +50,3 @@ def remove_tag(tag_id):
             return (False, "Error occured")
         else:
             return (True, "OK")
-
-def get_courses(page_no=0, page_size=5):
-    """ Returns list of most recent courses """
-    query = Course.query.order_by(desc(Course.postTime)).offset(page_no * page_size).limit(page_size)
-    return [ course.dictify() for course in query ]

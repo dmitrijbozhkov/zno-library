@@ -1,32 +1,15 @@
-""" Defines api routes """
+""" Defines tag routes """
 from flask import Blueprint, request, make_response
 from json import dumps
 from app import db
 from flask_security import auth_token_required, roles_required
-from .api_model import get_tags, get_courses, set_tag, remove_tag
-from auth_module.auth_model import user_has_role
+from .tag_model import get_tags, set_tag, remove_tag
+from auth_module.auth_routes import check_account
+from .route_utils import respond
 
-api = Blueprint("api", "api_routes", None, url_prefix="/api")
+tags_blueprint = Blueprint("tags", "tags_routes", None, url_prefix="/api/tags")
 
-def check_account(req, role):
-    """ Checks if user has appropriate role """
-    try:
-        email = user_has_role(req["email"], role)
-    except KeyError as err:
-        return (False, make_response(dumps({ "error": "No email field" }), 401))
-    else:
-        valid = user_has_role(req["email"], role)
-        if valid[0]:
-            return valid
-        else:
-            return (False, make_response(dumps({ "error": valid[1] }), 401))
-
-@api.route("/recent/<int:page>/")
-def recent(page: int):
-    """ Recent documents """
-    return "recent news page " + str(page)
-
-@api.route("/tags/", methods=["GET"])
+@tags_blueprint.route("/", methods=["GET"])
 def tags():
     """ Course tags """
     tags = get_tags()
@@ -35,7 +18,7 @@ def tags():
     else:
         return make_response(dumps({ "error": tags[1] }), 400)
 
-@api.route("/tags/add/", methods=["POST"])
+@tags_blueprint.route("/add/", methods=["POST"])
 @auth_token_required
 def add_tag():
     """ Adds tag """
@@ -54,7 +37,7 @@ def add_tag():
     else:
         return auth[1]
 
-@api.route("/tags/delete/", methods=["DELETE"])
+@tags_blueprint.route("/delete/", methods=["DELETE"])
 @auth_token_required
 def delete_tag():
     """ Deletes tag """
@@ -72,16 +55,3 @@ def delete_tag():
                 return make_response(dumps({ "error": delete[1] }), 500)
     else:
         return auth[1]
-
-@api.route("/courses/")
-@api.route("/courses/<int:page>/", methods=["GET"])
-def recent_courses(page=0):
-    """ Returns most recent courses """
-    courses = get_courses(page)
-    return make_response(dumps({ "courses": courses }), 200)
-
-@api.route("/auth/")
-@auth_token_required
-def stuff():
-    """ must be authorized """
-    return make_response(dumps({ "error": "OK" }), 200)

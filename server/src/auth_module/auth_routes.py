@@ -1,8 +1,21 @@
 """ Manages users """
 from flask import Blueprint, request, make_response, Response
 from json import dumps
-from .auth_model import CredentialsChecker, add_user, log_in_credentials
+from .auth_model import CredentialsChecker, add_user, log_in_credentials, user_has_role
 import datetime
+
+def check_account(req, role):
+    """ Checks if user has appropriate role """
+    try:
+        email = user_has_role(req["email"], role)
+    except KeyError as err:
+        return (False, make_response(dumps({ "error": "No email field" }), 401))
+    else:
+        valid = user_has_role(req["email"], role)
+        if valid[0]:
+            return valid
+        else:
+            return (False, make_response(dumps({ "error": valid[1] }), 401))
 
 credentials_checker = CredentialsChecker()
 

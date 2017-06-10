@@ -33,9 +33,9 @@ def fill_roles(datastore, database):
     database.session.commit()
 
 def emptydb(database):
+    Course.query.delete()
     Tag.query.delete()
     User.query.delete()
-    Course.query.delete()
     Role.query.delete()
     database.session.commit()
 

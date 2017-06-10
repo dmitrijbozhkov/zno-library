@@ -1,14 +1,15 @@
+""" Tests for tag routes """
 import os
 import unittest
 from app import app, user_datastore
 from database.models import db
-from api_module.api_routes import api
+from api_module.tag_routes import tags_blueprint
 from auth_module.auth_routes import auth
 from json import loads, dumps
 
 app.testing = True
 app.config["TESTING"] = True
-app.register_blueprint(api)
+app.register_blueprint(tags_blueprint)
 app.register_blueprint(auth)
 
 class TagTestCase(unittest.TestCase):
