@@ -54,9 +54,6 @@ class User(Base, UserMixin):
     lastName = Column(String(40), nullable=False)
     roles = relationship("Role", back_populates="users", secondary=roles_users)
     courses = relationship("Course", back_populates="author")
-    # ReadChapters = relationship("UserChapterRead", back_populates="Users")
-    # Marks = relationship("UsersCourseTests", back_populates="Users")
-    # ChapterComments = relationship("CourseChapterComments", back_populates="Users")
 
 class Role(Base):
     """ Describes table of roles """
@@ -71,7 +68,6 @@ class Role(Base):
         return dictionary
     id = Column(Integer, primary_key=True)
     name = Column(String(80), unique=True, nullable=False)
-    description = Column(String(255))
     users = relationship("User", back_populates="roles", secondary=roles_users)
 
 # Courses
@@ -83,14 +79,12 @@ class Course(Base):
     def dictify(self):
         """ Turns model into dictionary """
         dictionary = {
-            "courseId": self.id,
+            "id": self.id,
             "name": self.name,
-            "contents": self.contents,
-            "postTime": self.postTime,
+            "postTime": str(self.postTime),
             "autor": self.author.dictify_author(),
             "description": self.description,
             "icon": self.icon,
-            "rev": self.rev,
             "tags": [ tag.dictify() for tag in self.tags ]
         }
         return dictionary
@@ -98,39 +92,38 @@ class Course(Base):
         """ Turns preface into dictionary """
         dictionary = {
             "preface": self.preface,
-            "preface_images": [ image.dictify() for image in self.preface_images ]
+            "preface_images": [ image.path for image in self.preface_images ]
+        }
+        return dictionary
+    def dictify_chapters(self):
+        """ Truns course chapters """
+        dictionary = {
+            "chapters": [ chapter.dictify_index() for chapter in self.chapters ]
         }
         return dictionary
     id = Column(String(16), primary_key=True)
     name = Column(String(200), nullable=False)
-    contents = Column(Text, nullable=True)
     postTime = Column(DateTime, nullable=False)
     description = Column(Text, nullable=True)
     preface = Column(Text, nullable=True)
     icon = Column(String(200))
+    version = Column(Integer, nullable=False)
     authorId = Column(Integer, ForeignKey("user.id"), nullable=False)
     author = relationship("User", back_populates="courses")
-    preface_images = relationship("PrefaceImage", back_populates="course")
+    preface_images = relationship("Image", back_populates="course")
     tags = relationship("Tag", back_populates="courses", secondary=tags_courses)
-    # ReadUsers = relationship("UserChapterRead", back_populates="Courses")
-    # Chapters = relationship("CourseChapters", back_populates="Courses")
-    # Tests = relationship("CourseTests", back_populates="Courses")
+    chapters = relationship("Chapter", back_populates="course")
 
-class PrefaceImage(Base):
+class Image(Base):
     """ Describes table of preface images """
-    __tablename__ = "preface_image"
+    __tablename__ = "image"
     query = db.session.query_property()
-    def dictify(self):
-        """ Turns model into dictionary """
-        dictionary = {
-            "id": self.id,
-            "path": self.path
-        }
-        return dictionary
     id = Column(String(32), primary_key=True)
     path = Column(String(200), nullable=False)
-    courseId = Column(String(32), ForeignKey("course.id"), nullable=False)
+    courseId = Column(String(32), ForeignKey("course.id"), nullable=True)
+    chapterId = Column(String(16), ForeignKey("chapter.id"), nullable=True)
     course = relationship("Course", back_populates="preface_images")
+    chapter = relationship("Chapter", back_populates="images")
 
 class Tag(Base):
     """ Describes table of course tags """
@@ -146,3 +139,49 @@ class Tag(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(40), nullable=False, unique=True)
     courses = relationship("Course", back_populates="tags", secondary=tags_courses)
+
+# Chapters
+
+class Chapter(Base):
+    """ Describes table of course chapters """
+    __tablename__ = "chapter"
+    query = db.session.query_property()
+    def dictify(self):
+        """ Turns model into dictionary """
+        dictionary = {
+            "id": self.id,
+            "name": self.name,
+            "contents": self.contents,
+            "course": self.course.id,
+            "images": [ image.path for image in self.images ],
+            "files": [ file.path for file in self.files ],
+            "previous": self.previous,
+            "next": self.next
+        }
+        return dictionary
+    def dictify_index(self):
+        """ Turns model into index """
+        dictionary = {
+            "id": self.id,
+            "name": self.name
+        }
+        return dictionary
+    id = Column(String(16), primary_key=True)
+    name = Column(String(200), nullable=False)
+    contents = Column(Text, nullable=False)
+    previous = Column(String(32), nullable=True)
+    next = Column(String(32), nullable=True)
+    version = Column(Integer, nullable=False)
+    courseId = Column(String(32), ForeignKey("course.id", ondelete="CASCADE"), nullable=False)
+    course = relationship("Course", back_populates="chapters")
+    images = relationship("Image", back_populates="chapter")
+    files = relationship("ChapterFile", back_populates="chapter")
+
+class ChapterFile(Base):
+    """ Describes tables of chapter files """
+    __tablename__ = "chapter_file"
+    query = db.session.query_property()
+    id = Column(String(32), primary_key=True)
+    path = Column(String(100), nullable=False, unique=True)
+    chapterId = Column(String(16), ForeignKey("chapter.id"), nullable=False)
+    chapter = relationship("Chapter", back_populates="files")

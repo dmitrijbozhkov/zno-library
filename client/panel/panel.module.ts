@@ -6,7 +6,6 @@ import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { LoginGuard, TeacherGuard, AdminGuard } from "../account/account.module";
 import { UIModule } from "../main/UI.module";
 import { HistoryComponent } from "./components/history.component";
-import { SettingsComponent } from "./components/settings.component";
 import { PanelNavComponent } from "./components/panel-nav.component";
 import { TeacherPanelComponent } from "./components/teacher-panel.component";
 import { AdminPanelComponent } from "./components/admin-panel.component";
@@ -20,17 +19,18 @@ import { AddCourseTagComponent } from "./components/course/add-course-tag.compon
 import { CreateTagDialog } from "./components/tag/create-tag.component";
 import { InputsModule } from "../main/inputs.module";
 import { AddChapterComponent } from "./components/course/add-chapter.component";
-import { AddTestComponent } from "./components/course/add-test.component";
+import { HistoryChapterComponent } from "./components/history/history-chapter.component";
+import { HistoryCourseComponent } from "./components/history/history-course.component";
 
 let panelRoutes: Routes = [
     { path: "user", component: PanelNavComponent, canActivate: [ LoginGuard ], children: [
         { path: "", redirectTo: "history", pathMatch: "prefix" },
         { path: "history", component: HistoryComponent },
-        { path: "settings", component: SettingsComponent },
+        { path: "history/courses", component: HistoryCourseComponent },
+        { path: "history/chapter", component: HistoryChapterComponent },
         { path: "teacher", component: TeacherPanelComponent, canActivate: [ TeacherGuard ] },
         { path: "course/add", component: AddCourseComponent, canActivate: [ TeacherGuard ] },
         { path: "course/add/chapter", component: AddChapterComponent, canActivate: [ TeacherGuard ] },
-        { path: "course/add/test", component: AddTestComponent, canActivate: [ TeacherGuard ] },
         { path: "course/remove", component: RemoveCourseComponent, canActivate: [ TeacherGuard ] },
         { path: "history/students", component: HistoryStudentComponent, canActivate: [ TeacherGuard ] },
         { path: "admin", component: AdminPanelComponent, canActivate: [ AdminGuard ] },
@@ -42,7 +42,6 @@ let panelRoutes: Routes = [
     imports: [ ReactiveFormsModule, UIModule, FormsModule, RouterModule.forRoot(panelRoutes), InputsModule ],
     declarations: [
         HistoryComponent,
-        SettingsComponent,
         PanelNavComponent,
         TeacherPanelComponent,
         AdminPanelComponent,
@@ -52,7 +51,6 @@ let panelRoutes: Routes = [
         HistoryStudentComponent,
         AdminRolesComponent,
         CreateTagDialog,
-        AddTestComponent,
         AddChapterComponent
     ],
     providers: [ HistoryService, AddCourseService ],

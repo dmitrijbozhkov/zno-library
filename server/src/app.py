@@ -7,7 +7,7 @@ from database.setup import init_db
 app = Flask(
     "metodichka",
     template_folder="../../client/views/",
-    static_folder="../../static/",
+    static_folder="../../static/client/",
     static_url_path="/static")
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:pass@localhost:5432/metodichka-test"

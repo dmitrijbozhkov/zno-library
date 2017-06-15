@@ -52,19 +52,19 @@ class TagTestCase(unittest.TestCase):
         req = self.app.post("/api/tags/add/", data=json, content_type="application/json", headers={ "Authentication-Token": authToken["token"] })
         self.assertEqual(req.data, expected)
 
-    def test_add_tag_should_return_ok_if_tag_created(self):
+    def test_add_tag_should_return_id_if_tag_created(self):
         login = '{ "email": "bozhkov_d@mail.ru", "password": "pass1234" }'
         token = self.app.post("/auth/login/", data=login, content_type="application/json")
         authToken = loads(token.data)
-        json = '{ "tagname": "math", "email": "bozhkov_d@mail.ru" }'
-        expected = b'{"OK": true}'
+        json = '{ "tagname": "pepe", "email": "bozhkov_d@mail.ru" }'
         req = self.app.post("/api/tags/add/", data=json, content_type="application/json", headers={ "Authentication-Token": authToken["token"] })
-        self.assertEqual(req.data, expected)
+        actual = loads(req.data)
+        self.assertTrue(isinstance(actual["id"], int))
     
     def test_get_tag_should_return_collection_of_tags(self):
-        expected = b'{"tags": []}'
         req = self.app.get("/api/tags/", content_type="application/json")
-        self.assertEqual(req.data, expected)
+        actual = loads(req.data)
+        self.assertTrue(isinstance(actual["tags"], list))
     
     def test_delete_tag_should_return_error_if_no_tag_field(self):
         login = '{ "email": "bozhkov_d@mail.ru", "password": "pass1234" }'
@@ -75,20 +75,11 @@ class TagTestCase(unittest.TestCase):
         req = self.app.delete("/api/tags/delete/", data=json, content_type="application/json", headers={ "Authentication-Token": authToken["token"] })
         self.assertEqual(req.data, expected)
     
-    def test_delete_tag_should_return_error_if_no_tag_field(self):
+    def test_delete_tag_should_return_error_if_no_tag_found(self):
         login = '{ "email": "bozhkov_d@mail.ru", "password": "pass1234" }'
         token = self.app.post("/auth/login/", data=login, content_type="application/json")
         authToken = loads(token.data)
-        json = '{ "email": "bozhkov_d@mail.ru" }'
-        expected = b'{"error": "No tagid field"}'
-        req = self.app.delete("/api/tags/delete/", data=json, content_type="application/json", headers={ "Authentication-Token": authToken["token"] })
-        self.assertEqual(req.data, expected)
-    
-    def test_delete_tag_should_return_error_if_no_tag_field(self):
-        login = '{ "email": "bozhkov_d@mail.ru", "password": "pass1234" }'
-        token = self.app.post("/auth/login/", data=login, content_type="application/json")
-        authToken = loads(token.data)
-        json = '{ "tagid": 2, "email": "bozhkov_d@mail.ru" }'
+        json = '{ "tagid": 55, "email": "bozhkov_d@mail.ru" }'
         expected = b'{"error": "No such tag"}'
         req = self.app.delete("/api/tags/delete/", data=json, content_type="application/json", headers={ "Authentication-Token": authToken["token"] })
         self.assertEqual(req.data, expected)
@@ -97,7 +88,10 @@ class TagTestCase(unittest.TestCase):
         login = '{ "email": "bozhkov_d@mail.ru", "password": "pass1234" }'
         token = self.app.post("/auth/login/", data=login, content_type="application/json")
         authToken = loads(token.data)
-        json = '{ "tagid": 1, "email": "bozhkov_d@mail.ru" }'
+        jsonAdd = '{ "tagname": "adding", "email": "bozhkov_d@mail.ru" }'
+        reqAdd = self.app.post("/api/tags/add/", data=jsonAdd, content_type="application/json", headers={ "Authentication-Token": authToken["token"] })
+        actualAdd = loads(reqAdd.data)
+        json = '{ "tagid": ' + str(actualAdd["id"]) + ', "email": "bozhkov_d@mail.ru" }'
         expected = b'{"OK": true}'
         req = self.app.delete("/api/tags/delete/", data=json, content_type="application/json", headers={ "Authentication-Token": authToken["token"] })
         self.assertEqual(req.data, expected)

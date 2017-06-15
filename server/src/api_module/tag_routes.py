@@ -31,7 +31,7 @@ def add_tag():
             return make_response(dumps({ "error": "No tagname field" }), 400)
         else:
             if insert[0]:
-                return make_response(dumps({ "OK": True }), 200)
+                return make_response(dumps({ "id": insert[1] }), 200)
             else:
                 return make_response(dumps({ "error": insert[1] }), 500)
     else:

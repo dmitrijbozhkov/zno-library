@@ -2,7 +2,7 @@
 from flask import Blueprint, request, make_response
 from json import dumps
 from flask_security import auth_token_required
-from .course_model import get_courses, check_name, check_add_data, add_course, check_add_contents, add_contents, check_add_description, add_description, check_preface, add_preface
+from .course_model import page_courses, check_name, check_add_data, add_course, check_add_description, add_description, check_preface, add_preface, check_delete, delete_course, check_set_tags, set_tags, get_chapters
 from auth_module.auth_routes import check_account
 from .course_model import generate_course_id
 from .route_utils import respond
@@ -11,10 +11,9 @@ course_blueprint = Blueprint("course", "course_routes", None, url_prefix="/api/c
 
 @course_blueprint.route("/")
 @course_blueprint.route("/<int:page>/", methods=["GET"])
-@auth_token_required
 def get_courses(page=0):
     """ Returns most recent courses """
-    courses = get_courses(page)
+    courses = page_courses(page)
     return make_response(dumps({ "courses": courses }), 200)
 
 @course_blueprint.route("/add/", methods=["POST"])
@@ -28,14 +27,14 @@ def add_courses():
     else:
         return auth[1]
 
-@course_blueprint.route("/add/contents/", methods=["POST"])
+@course_blueprint.route("/delete/", methods=["DELETE"])
 @auth_token_required
-def course_contents():
-    """ Adds content to course """
-    content = request.get_json()
-    auth = check_account(content, "Teacher")
+def course_delete():
+    """ Deletes course by id """
+    course = request.get_json()
+    auth = check_account(course, "Teacher")
     if auth[0]:
-        return respond(content, check_add_contents, add_contents)
+        return respond(course, check_delete, delete_course)
     else:
         return auth[1]
 
@@ -61,6 +60,17 @@ def course_preface():
     else:
         return auth[1]
 
+@course_blueprint.route("/tags/", methods=["POST"])
+@auth_token_required
+def course_set_tags():
+    """ Sets tags to course """
+    tags = request.get_json()
+    auth = check_account(tags, "Teacher")
+    if auth[0]:
+        return respond(tags, check_set_tags, set_tags)
+    else:
+        return auth[1]
+
 @course_blueprint.route("/check/", methods=["POST"])
 @auth_token_required
 def check_course():
@@ -71,3 +81,12 @@ def check_course():
         return respond(name, check_name, generate_course_id)
     else:
         return auth[1]
+
+@course_blueprint.route("/chapters/<id>/")
+@auth_token_required
+def get_course_chapters(id):
+    """ Returns course chapters """
+    chapters = get_chapters(id)
+    if chapters == False:
+        return make_response(dumps({ "error": "No course found" }), 200)
+    return make_response(dumps(chapters), 200)

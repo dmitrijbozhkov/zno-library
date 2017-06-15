@@ -21,10 +21,10 @@ def find_tag_name(name):
 def set_tag(tag_name):
     """ Adds new tag """
     tag = find_tag_name(tag_name).first()
+    id = 1
     if tag == None:
         try:
             last_id = db.session.query(func.max(Tag.id)).first()
-            id = 1
             if not (last_id[0] == None):
                 id = last_id[0] + 1
             addTag = Tag(id=id, name=tag_name)
@@ -33,7 +33,7 @@ def set_tag(tag_name):
         except:
             return (False, "Error occured")
         else:
-            return (True, "OK")
+            return (True, id)
     else:
         return (False, "Tag already exists")
 

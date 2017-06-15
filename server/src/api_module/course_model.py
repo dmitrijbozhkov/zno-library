@@ -1,6 +1,6 @@
 """ Logic for course routes """
 from app import user_datastore, db
-from database.models import Course
+from database.models import Course, Tag
 from auth_module.auth_model import find_email
 from sqlalchemy import desc, func
 from .utils import generate_id
@@ -9,7 +9,7 @@ from .utils import generate_id
 
 def find_course(id):
     """ Finds course by id """
-    return Course.query.filter(Course.id == id).first()
+    return Course.query.get(str(id))
 
 def check_add_data(data):
     """ Checks passed data for adding course """
@@ -22,18 +22,6 @@ def check_add_data(data):
             return (False, "postTime is empty")
         if data["email"] == None:
             return (False, "author is empty")
-    except KeyError as error:
-        return (False, "No " + error.args[0] + " field")
-    else:
-        return (True, "OK")
-
-def check_add_contents(data):
-    """ Checks passed data for adding contents to course """
-    try:
-        if data["id"] == None:
-            return (False, "id is empty")
-        if data["contents"] == None:
-            return (False, "contents is empty")
     except KeyError as error:
         return (False, "No " + error.args[0] + " field")
     else:
@@ -78,6 +66,59 @@ def check_preface(data):
     else:
         return (True, "OK")
 
+def check_delete(data):
+    """ Checks passed data for deleting course """
+    try:
+        if data["id"] == None:
+            return (False, "id is empty")
+    except KeyError as error:
+        return (False, "No " + error.args[0] + " field")
+    else:
+        return (True, "OK")
+
+def check_set_tags(data):
+    """ Checks passed data for adding tags """
+    try:
+        if data["id"] == None:
+            return (False, "id is empty")
+        if data["tags"] == None:
+            return (False, "tags is empty")
+    except KeyError as error:
+        return (False, "No " + error.args[0] + " field")
+    else:
+        return (True, "OK")
+
+def create_tag(tags):
+    """ Tags to add """
+    tagsAdd = []
+    qTag = None
+    for tagId in tags:
+        qTag = Tag.query.get(tagId)
+        tagsAdd.append(qTag)
+    return tagsAdd
+
+def set_tags(data):
+    """ Adds tags to course """
+    try:
+        course = Course.query.get(data["id"])
+        if course == None:
+            return ({ "error": "No course found" }, 200)
+        tagsAdd = create_tag(data["tags"])
+        if None in tagsAdd:
+            return ({ "error": "tag not found" }, 200)
+        course.tags.extend(tagsAdd)
+        db.session.add(course)
+        db.session.commit()
+        return ({ "OK": True }, 200)
+    except Exception as error:
+        return ({ "error": "Error occured" }, 500)
+
+def delete_course(data):
+    """ Deletes course by id """
+    Course.query.filter(Course.id == data["id"]).delete()
+    db.session.commit()
+    return ({ "OK": True }, 200)
+
 def add_preface(data):
     """ Adds preface to course """
     try:
@@ -104,19 +145,6 @@ def add_description(data):
     else:
         return ({ "OK": True }, 200)
 
-def add_contents(data):
-    """ Adds contents contents to course """
-    try:
-        course = find_course(data["id"])
-        if course == None:
-            return ({ "error": "No course found" }, 400)
-        course.contents = data["contents"]
-        db.session.commit()
-    except Exception as err:
-        return ({ "error": "Error occured" }, 500)
-    else:
-        return ({ "OK": True }, 200)
-
 def add_course(data):
     """ Adds new course to database """
     try:
@@ -127,7 +155,6 @@ def add_course(data):
         db.session.add(course)
         db.session.commit()
     except Exception as err:
-        print(err)
         return ({ "error": "Error occured" }, 500)
     else:
         return ({ "OK": True }, 200)
@@ -143,7 +170,14 @@ def generate_course_id(data):
     except Exception as error:
         return ({ "error": "Error occured" }, 500)
 
-def get_courses(page_no=0, page_size=5):
+def page_courses(page_no=0, page_size=5):
     """ Returns list of most recent courses """
     query = Course.query.order_by(desc(Course.postTime)).offset(page_no * page_size).limit(page_size)
     return [ course.dictify() for course in query ]
+
+def get_chapters(id):
+    """ Returns course chapters """
+    course = find_course(id)
+    if course == None:
+        return False
+    return course.dictify_chapters()

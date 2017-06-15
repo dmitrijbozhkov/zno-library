@@ -14,7 +14,6 @@ export enum UserPrivilege {
     template: `
     <nav *ngIf="accountState > 0" md-tab-nav-bar>
         <a md-tab-link routerLink="history">История</a>
-        <a md-tab-link routerLink="settings">Настройки</a>
         <a md-tab-link *ngIf="accountState > 1" routerLink="teacher">Панель учителя</a>
         <a md-tab-link *ngIf="accountState > 2" routerLink="admin">Панель администратора</a>
     </nav>
